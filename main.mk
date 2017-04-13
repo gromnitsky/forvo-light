@@ -31,7 +31,14 @@ $(assets.dest): $(out)/%: $(mk)/%
 	$(mkdir)
 	$(copy)
 
-compile: $(assets.dest)
+vendor.src := $(wildcard $(mk)/vendor/*)
+vendor.dest := $(patsubst $(mk)/%, $(out)/src/%, $(vendor.src))
+
+$(vendor.dest): $(out)/src/%: $(mk)/%
+	$(mkdir)
+	$(copy)
+
+compile: $(assets.dest) $(vendor.dest)
 
 
 

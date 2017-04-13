@@ -11,22 +11,19 @@
 
 #header > a {
   display: inline-block;
-  width: 32%;
+  width: 24%;
   text-align: center;
   text-decoration: none;
+  padding: 5px 0 5px;
   color: blue;
 }
 
 #header > a[class="selected"] {
-  background-color: #eee;
-  color: black;
-}
-
-#header > a:visited {
-  color: blue;
+  background-color: #005bbb;
+  color: #ffd500;
 }
 
 #header > a:hover {
-  background-color: darkslategrey;
-  color: whitesmoke;
+  background-color: #ffd500;
+  color: #005bbb;
 }

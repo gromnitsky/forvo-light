@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="FontAwesome.css">
 
     <script type="text/mustache" id="tmpl_search">
       Search
@@ -25,14 +26,15 @@
   <body>
 
     <div id="header">
-      <a href="#/search">Search</a>
-      <a href="#/preferences">Preferences</a>
-      <a href="#/about">About</a>
+      <a href="#/search"><i class="fa fa-search fa-lg"></i></a>
+      <a href="#/history"><i class="fa fa-history fa-lg"></i></a>
+      <a href="#/preferences"><i class="fa fa-cogs fa-lg"></i></a>
+      <a href="#/about"><i class="fa fa-info-circle fa-lg"></i></a>
     </div>
 
     <div id="app">
       Loading...
-      <noscript>JavaScript is required.</noscript>
+      <noscript>Error: JavaScript is required</noscript>
     </div>
 
     <script src="app.browserify.js"></script>
