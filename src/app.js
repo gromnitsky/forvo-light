@@ -3,21 +3,34 @@
 require("babel-polyfill")
 let Mustache = require('mustache')
 
+let meta = require('../package.json')
+
 class Page {
     constructor(template_id) {
-	this.html = Mustache.render(document.querySelector(template_id).innerHTML, this)
+	this.template_id = template_id
+    }
+
+    render() {
+	return Mustache.render(document.querySelector(this.template_id).innerHTML, this)
     }
 }
 
 class PageAbout extends Page {
     constructor() {
 	super('#tmpl_about')
+	this.meta = meta
     }
 }
 
 class PagePreferences extends Page {
     constructor() {
 	super('#tmpl_preferences')
+    }
+}
+
+class PageHistory extends Page {
+    constructor() {
+	super('#tmpl_history')
     }
 }
 
@@ -40,13 +53,15 @@ let page_navigate = function(node) {
     let page
     if (node.hash.match(/^#\/about\/?/)) {
 	page = new PageAbout()
+    } else if (node.hash.match(/^#\/history\/?/)) {
+	page = new PageHistory()
     } else if (node.hash.match(/^#\/preferences\/?/)) {
 	page = new PagePreferences()
     } else {
 	page = new PageSearch()
     }
 
-    app.innerHTML=page.html
+    app.innerHTML = page.render()
 }
 
 let page_select = function() {

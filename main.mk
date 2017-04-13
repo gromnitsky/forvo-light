@@ -43,7 +43,7 @@ compile: $(assets.dest) $(vendor.dest)
 
 
 js.src := $(filter %.js, $(src.files))
-js.ccache := $(out)/.ccache/js
+js.ccache := $(out)/.ccache
 js.dest := $(patsubst $(mk)/src/%.js, $(js.ccache)/%.js, $(js.src))
 
 $(js.dest): $(js.ccache)/%.js: $(mk)/src/%.js
@@ -57,6 +57,7 @@ compile: $(js.dest)
 
 $(out)/src/app.browserify.js: $(js.ccache)/app.js
 	$(mkdir)
-	browserify $< -o $@
+	browserify -d $< -o $@
 
+$(out)/src/app.browserify.js: $(js.dest)
 compile: $(out)/src/app.browserify.js

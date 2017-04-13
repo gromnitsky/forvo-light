@@ -13,12 +13,23 @@
       Search
     </script>
 
+    <script type="text/mustache" id="tmpl_history">
+      Hist
+    </script>
+
     <script type="text/mustache" id="tmpl_preferences">
       Pref
     </script>
 
     <script type="text/mustache" id="tmpl_about">
-      About
+      <p>
+	{{ meta.name }} {{ meta.version }}.<br>
+	{{ meta.description }}.
+      </p>
+
+      <p>
+	Works as a regular web or an Android 2.3+ app.
+      </p>
     </script>
 
   </head>
