@@ -1,0 +1,13 @@
+{
+    "name": "forvo-light",
+    "version": "0.0.1",
+    "description": "A lightweight interface to Forvo",
+    "keywords": [
+	"forvo"
+    ],
+    "author": "AG",
+    "license": "MIT",
+    "dependencies": {
+	"mustache": "~2.3.0"
+    }
+}

@@ -1,0 +1,32 @@
+@media (min-width: 601px) {
+  body {
+    width: 600px;
+    margin: 0 auto;
+  }
+}
+
+#header {
+  margin-bottom: 1em;
+}
+
+#header > a {
+  display: inline-block;
+  width: 32%;
+  text-align: center;
+  text-decoration: none;
+  color: blue;
+}
+
+#header > a[class="selected"] {
+  background-color: #eee;
+  color: black;
+}
+
+#header > a:visited {
+  color: blue;
+}
+
+#header > a:hover {
+  background-color: darkslategrey;
+  color: whitesmoke;
+}
