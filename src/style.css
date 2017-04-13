@@ -35,3 +35,7 @@
 #search > input {
   width: 85%;
 }
+
+#preferences input {
+  width: 100%;
+}

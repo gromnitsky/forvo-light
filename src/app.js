@@ -16,6 +16,11 @@ class Page {
 	this.template = document.querySelector(template_id)
     }
 
+    attach(selector, event, fn) {
+	let node = this.$(selector)
+	node.addEventListener(event, (evt) => fn.call(this, evt, node))
+    }
+
     render() {
 	let id = this.template_id.replace(/^#tmpl_/, '')
 	this.container.innerHTML = Mustache.render(`<div id=${id}>` + this.template.innerHTML + '</div>', this)
@@ -33,6 +38,23 @@ class PageAbout extends Page {
 class PagePreferences extends Page {
     constructor(container) {
 	super(container, '#tmpl_preferences')
+    }
+
+    bind() {
+	this.attach('form', 'submit', this.save)
+    }
+
+    save(event) {
+	event.preventDefault()
+
+	let btn = this.$('button')
+	btn.disabled = true
+
+	// TODO
+
+	setTimeout( () => {
+	    btn.disabled = false
+	}, 1000)
     }
 }
 
