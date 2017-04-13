@@ -27,3 +27,11 @@
   background-color: #ffd500;
   color: #005bbb;
 }
+
+#search > button,input {
+  height: 2em;
+}
+
+#search > input {
+  width: 85%;
+}

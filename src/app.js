@@ -6,43 +6,58 @@ let Mustache = require('mustache')
 let meta = require('../package.json')
 
 class Page {
-    constructor(template_id) {
+    constructor(container_id, template_id) {
+	this.container = document.querySelector(container_id)
+	this.$ = (str) => {
+	    let nodes = this.container.querySelectorAll(str)
+	    return nodes.length === 1 ? nodes[0] : nodes
+	}
 	this.template_id = template_id
+	this.template = document.querySelector(template_id)
     }
 
     render() {
-	return Mustache.render(document.querySelector(this.template_id).innerHTML, this)
+	let id = this.template_id.replace(/^#tmpl_/, '')
+	this.container.innerHTML = Mustache.render(`<div id=${id}>` + this.template.innerHTML + '</div>', this)
+	if (this.bind) this.bind()
     }
 }
 
 class PageAbout extends Page {
-    constructor() {
-	super('#tmpl_about')
+    constructor(container) {
+	super(container, '#tmpl_about')
 	this.meta = meta
     }
 }
 
 class PagePreferences extends Page {
-    constructor() {
-	super('#tmpl_preferences')
+    constructor(container) {
+	super(container, '#tmpl_preferences')
     }
 }
 
 class PageHistory extends Page {
-    constructor() {
-	super('#tmpl_history')
+    constructor(container) {
+	super(container, '#tmpl_history')
     }
 }
 
 class PageSearch extends Page {
-    constructor() {
-	super('#tmpl_search')
+    constructor(container) {
+	super(container, '#tmpl_search')
+    }
+
+    bind() {
+	this.$('button').onclick = this.query
+    }
+
+    query() {
+	alert('hi')
     }
 }
 
 
 /* Main */
-let app = document.getElementById('app')
 
 let page_navigate = function(node) {
     let aaa = node.parentElement.querySelectorAll('a')
@@ -52,16 +67,16 @@ let page_navigate = function(node) {
 
     let page
     if (node.hash.match(/^#\/about\/?/)) {
-	page = new PageAbout()
+	page = new PageAbout('#app')
     } else if (node.hash.match(/^#\/history\/?/)) {
-	page = new PageHistory()
+	page = new PageHistory('#app')
     } else if (node.hash.match(/^#\/preferences\/?/)) {
-	page = new PagePreferences()
+	page = new PagePreferences('#app')
     } else {
-	page = new PageSearch()
+	page = new PageSearch('#app')
     }
 
-    app.innerHTML = page.render()
+    page.render()
 }
 
 let page_select = function() {
