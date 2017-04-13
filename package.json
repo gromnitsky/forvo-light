@@ -8,6 +8,7 @@
     "author": "AG",
     "license": "MIT",
     "dependencies": {
-	"mustache": "~2.3.0"
+	"mustache": "~2.3.0",
+	"babel-polyfill": "~6.23.0"
     }
 }

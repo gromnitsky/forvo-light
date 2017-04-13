@@ -1,5 +1,6 @@
 'use strict';
 
+require("babel-polyfill")
 let Mustache = require('mustache')
 
 class Page {
@@ -31,7 +32,9 @@ class PageSearch extends Page {
 let app = document.getElementById('app')
 
 let page_navigate = function(node) {
-    node.parentElement.querySelectorAll('a').forEach( val => val.className = '')
+    let aaa = node.parentElement.querySelectorAll('a')
+    // IE11 doesn't support forEach for NodeList
+    for (let idx = 0; idx < aaa.length; ++idx) aaa[idx].className = ''
     node.className = 'selected'
 
     let page
