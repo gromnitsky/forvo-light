@@ -64,9 +64,9 @@ compile: $(json.dest)
 
 
 
-$(out)/src/app.browserify.js: $(js.ccache)/app.js
+$(out)/src/main.browserify.js: $(js.ccache)/main.js
 	$(mkdir)
 	browserify -d $< -o $@
 
-$(out)/src/app.browserify.js: $(js.dest)
-compile: $(out)/src/app.browserify.js
+$(out)/src/main.browserify.js: $(js.dest)
+compile: $(out)/src/main.browserify.js
