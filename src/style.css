@@ -5,36 +5,39 @@
   }
 }
 
-#header {
-  margin-bottom: 1em;
+/* Navigation */
+
+#nav {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  margin: 0 0 1em;
+  padding: 0;
 }
 
-#header > a {
-  display: inline-block;
-  width: 24%;
+#nav > a {
+  display: table-cell;
   text-align: center;
   text-decoration: none;
-  padding: 5px 0 5px;
+  padding: 5px 0;
   color: blue;
 }
 
-#header > a[class="selected"] {
+#nav a[class="selected"] {
   background-color: #005bbb;
   color: #ffd500;
 }
 
-#header > a:hover {
+#nav a:hover {
   background-color: #ffd500;
   color: #005bbb;
 }
 
 /* Search */
 
-#search button,input {
+#search button,
+#search input {
   height: 2em;
-}
-
-#search > form {
 }
 
 /* <input> */

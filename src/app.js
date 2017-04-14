@@ -108,8 +108,8 @@ let page_navigate = function(node) {
 
 let page_select = function() {
     let mode = location.hash.match('^#/([a-z]+)/?') || []
-    page_navigate(document.querySelector(`#header > a[href="#/${mode[1]}"]`)
-		  || document.querySelector('#header > a'))
+    page_navigate(document.querySelector(`#nav > a[href="#/${mode[1]}"]`)
+		  || document.querySelector('#nav > a'))
 }
 
 document.addEventListener('DOMContentLoaded', () => {
