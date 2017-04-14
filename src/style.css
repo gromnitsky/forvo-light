@@ -28,11 +28,11 @@
   color: #005bbb;
 }
 
-#search > button,input {
+#search button,input {
   height: 2em;
 }
 
-#search > input {
+#search input {
   width: 85%;
 }
 

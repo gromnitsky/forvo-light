@@ -10,8 +10,10 @@
     <link rel="stylesheet" href="FontAwesome.css">
 
     <script type="text/mustache" id="tmpl_search">
-      <input type="search" spellcheck="false" placeholder="Avaux">
-      <button><i class="fa fa-search"></i></button>
+      <form>
+	<input type="search" spellcheck="false" placeholder="Avaux">
+	<button><i class="fa fa-search"></i></button>
+      </form>
     </script>
 
     <script type="text/mustache" id="tmpl_history">
@@ -20,13 +22,10 @@
 
     <script type="text/mustache" id="tmpl_preferences">
       <form>
-	API key (get one from <a href="https://api.forvo.com/account/"
-	target="_blank">Forvo's website</a>):<br>
-	<input type="search" spellcheck="false" pattern="[0-9a-z]{32}" required
-	       placeholder="d7c41844aa95b4ba66a6b1e323d317a2">
-
+	Your Forvo API key:<br>
+	<input type="search" spellcheck="false">
 	<p>
-	  <button type="submit"><i class="fa fa-floppy-o"></i></button>
+	  <button>Save</button>
 	</p>
       </form>
     </script>
@@ -48,9 +47,9 @@
 
     <div id="header">
       <a href="#/search"><i class="fa fa-search fa-lg"></i></a>
-      <a href="#/history"><i class="fa fa-history fa-lg"></i></a>
-      <a href="#/preferences"><i class="fa fa-cogs fa-lg"></i></a>
-      <a href="#/about"><i class="fa fa-info-circle fa-lg"></i></a>
+      <a href="#/history"><i class="fa fa-bookmark-o fa-lg"></i></a>
+      <a href="#/preferences"><i class="fa fa-cog fa-lg"></i></a>
+      <a href="#/about"><i class="fa fa-question-circle-o fa-lg"></i></a>
     </div>
 
     <div id="app">

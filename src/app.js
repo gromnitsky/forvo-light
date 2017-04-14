@@ -24,7 +24,7 @@ class Page {
     render() {
 	let id = this.template_id.replace(/^#tmpl_/, '')
 	this.container.innerHTML = Mustache.render(`<div id=${id}>` + this.template.innerHTML + '</div>', this)
-	if (this.bind) this.bind()
+	if (this.post_render) this.post_render()
     }
 }
 
@@ -40,7 +40,7 @@ class PagePreferences extends Page {
 	super(container, '#tmpl_preferences')
     }
 
-    bind() {
+    post_render() {
 	this.attach('form', 'submit', this.save)
     }
 
@@ -69,12 +69,13 @@ class PageSearch extends Page {
 	super(container, '#tmpl_search')
     }
 
-    bind() {
-	this.$('button').onclick = this.query
+    post_render() {
+	this.attach('form', 'submit', this.submit)
     }
 
-    query() {
-	alert('hi')
+    submit(event) {
+	event.preventDefault()
+	console.log('query')
     }
 }
 
