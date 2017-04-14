@@ -13,7 +13,7 @@ suite('lang', function() {
     })
 })
 
-suite('Simple', function() {
+suite('misc', function() {
     setup(function() {
     })
 
@@ -47,5 +47,28 @@ suite('Simple', function() {
 	assert.equal(search.req_url('XXX', search.parse_query('. cat shark'),
 				    'en'),
 		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark/language/en')
+    })
+})
+
+suite('History', function() {
+    test('size=3', function() {
+	let h = new search.History(3)
+	h.add(1).add(2).add(3).add(4).add(5)
+	assert.deepEqual(h._arr, [5,4,3])
+	h.add(3)
+	assert.deepEqual(h._arr, [3,5,4])
+    })
+
+    test('size=1', function() {
+	let h = new search.History(1)
+	h.add(1).add(2).add(3).add(4).add(5)
+	assert.deepEqual(h._arr, [5])
+    })
+
+    test('iterator', function() {
+	let h = new search.History(3)
+	h.add(1).add(2).add(3)
+	assert.deepEqual([...h], [3,2,1])
+	assert.deepEqual(Array.from(h), [3,2,1])
     })
 })

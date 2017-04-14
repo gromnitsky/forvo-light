@@ -50,3 +50,33 @@ exports.req_url = function(apikey, query, lang_code) {
     if (lang_code) url += `/language/${lang_code}`
     return url
 }
+
+class History {
+    constructor(maxlen = 32) {
+	if (maxlen < 1) throw new Error('maxlen param must be >= 1')
+	this.maxlen = maxlen
+	this._arr = []
+    }
+
+    add(elm) {
+	let idx = this._arr.indexOf(elm)
+	if (idx === -1) {
+	    if (this._arr.length >= this.maxlen) this._arr.pop()
+	} else {
+	    this._arr.splice(idx, 1)
+	}
+
+	this._arr.unshift(elm)
+	return this
+    }
+
+    [Symbol.iterator]() {
+	return this._arr[Symbol.iterator]()
+    }
+
+    toString() {
+	return this._arr.toString()
+    }
+}
+
+exports.History = History
