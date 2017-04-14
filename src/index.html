@@ -22,8 +22,10 @@
 
     <script type="text/mustache" id="tmpl_preferences">
       <form>
-	Your Forvo API key:<br>
-	<input type="search" spellcheck="false">
+	<label>
+	  Your Forvo API key:
+	  <input type="search" spellcheck="false" value="{{ apikey }}">
+	</label>
 	<p>
 	  <button>Save</button>
 	</p>

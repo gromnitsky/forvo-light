@@ -38,6 +38,7 @@ class PageAbout extends Page {
 class PagePreferences extends Page {
     constructor(container) {
 	super(container, '#tmpl_preferences')
+	this.apikey = localStorage.getItem('forvo-light-api-key')
     }
 
     post_render() {
@@ -50,11 +51,11 @@ class PagePreferences extends Page {
 	let btn = this.$('button')
 	btn.disabled = true
 
-	// TODO
+	localStorage.setItem('forvo-light-api-key', this.$('input').value)
 
 	setTimeout( () => {
 	    btn.disabled = false
-	}, 1000)
+	}, 500)
     }
 }
 
