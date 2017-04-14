@@ -24,7 +24,7 @@ package.json: $(mk)/package.json
 
 src.files := $(wildcard $(mk)/src/*)
 
-assets.src := $(filter-out %.js, $(src.files))
+assets.src := $(filter-out %.json, $(filter-out %.js, $(src.files)))
 assets.dest := $(patsubst $(mk)/%, $(out)/%, $(assets.src))
 
 $(assets.dest): $(out)/%: $(mk)/%
@@ -52,6 +52,15 @@ $(js.dest): $(js.ccache)/%.js: $(mk)/src/%.js
 
 $(js.dest): node_modules
 compile: $(js.dest)
+
+json.src := $(filter %.json, $(src.files))
+json.dest := $(patsubst $(mk)/src/%.json, $(js.ccache)/%.json, $(json.src))
+
+$(json.dest): $(js.ccache)/%.json: $(mk)/src/%.json
+	$(mkdir)
+	$(copy)
+
+compile: $(json.dest)
 
 
 

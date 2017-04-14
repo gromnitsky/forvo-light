@@ -26,6 +26,10 @@ exports.codes_to_names = function() {
     return _codes_to_names
 }
 
+exports.list = function() {
+    return require('./lang-codes').items
+}
+
 exports.is_valid = function(lang_code) {
     return (lang_code in exports.codes_to_names())
 }

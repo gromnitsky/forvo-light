@@ -2,8 +2,10 @@
 
 require("babel-polyfill")
 let Mustache = require('mustache')
+let URLSearchParams = require('url-search-params')
 
 let meta = require('../package.json')
+let lang = require('./lang')
 
 class Page {
     constructor(container_id, template_id) {
@@ -68,6 +70,7 @@ class PageHistory extends Page {
 class PageSearch extends Page {
     constructor(container) {
 	super(container, '#tmpl_search')
+	this.langlist = lang.list()
     }
 
     post_render() {

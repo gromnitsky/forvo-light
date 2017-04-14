@@ -28,13 +28,34 @@
   color: #005bbb;
 }
 
+/* Search */
+
 #search button,input {
   height: 2em;
 }
 
-#search input {
-  width: 85%;
+#search > form {
 }
+
+/* <input> */
+#search form > div > div {
+  overflow: hidden;
+}
+
+#search form > select {
+  margin-bottom: 3px;
+}
+
+#search form button {
+  float: right;
+  margin-left: 3px;
+}
+
+#search form input {
+  width: 100%;
+}
+
+/* Preferences */
 
 #preferences input {
   width: 100%;

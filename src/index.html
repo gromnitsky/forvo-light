@@ -11,8 +11,21 @@
 
     <script type="text/mustache" id="tmpl_search">
       <form>
-	<input type="search" spellcheck="false" placeholder="Avaux">
-	<button><i class="fa fa-search"></i></button>
+	<select title="Optional" tabindex="2">
+	  <option disabled selected>Limit to language</option>
+	  <option value>(Any language)</option>
+	  {{ #langlist }}
+	  <option value="{{ code }}">{{ en }}</option>
+	  {{ /langlist }}
+	</select>
+
+	<div>
+	  <button tabindex="3"><i class="fa fa-search"></i></button>
+	  <div>
+	    <input tabindex="1" type="search" spellcheck="false"
+		   placeholder="Avaux">
+	  </div>
+	</div>
       </form>
     </script>
 
