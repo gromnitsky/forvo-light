@@ -95,7 +95,9 @@ class PageSearch extends Page {
 	search.forvo = {	// FIXME
 	    protocol: 'http',
 	    host: '127.0.0.1',
-	    port: 3000
+	    port: 8080
+//	    host: '192.168.197.115',
+//	    port: 9880
 	}
 	let query = search.parse_query(this.$('input').value)
 	let url = search.req_url(apikey, query, this.$('select').value)
@@ -107,13 +109,57 @@ class PageSearch extends Page {
 	console.log(url)
 	jsonp(url, {timeout: 2000}, (err, data) => {
 	    if (err) {
-		this.output(err)
+		this.output(`${search.forvo.host}:${search.forvo.port} ${err}`)
 		return
 	    }
 	    console.log(data)
+
+	    let widget
+	    switch (query.type) {
+	    case 'word-pronunciations':
+		this.output('TODO')
+		return
+	    case 'top20':
+		this.output('TODO')
+		return
+	    default:
+		widget = new ForvoPronouncedWordsSearch('#search__output', data)
+	    }
+	    widget.render()
 	})
     }
 }
+
+class ForvoPronouncedWordsSearch extends Page {
+    constructor(container, data) {
+	super(container, '#tmpl_forvo_pronounced-words-search')
+	this.items = this.transform(data)
+    }
+
+    transform(data) {
+	let r = []
+	for (let val of data.items) {
+	    let word = {}
+	    word.original = val.original
+	    word.lang = val.standard_pronunciation.langname
+	    word.country = val.standard_pronunciation.country
+
+	    word.upvotes = val.standard_pronunciation.num_positive_votes
+	    word.downvotes = val.standard_pronunciation.num_votes - word.upvotes
+	    if (word.upvotes === 0) word.upvotes = null
+	    if (word.downvotes === 0) word.downvotes = null
+
+	    word.mp3 = val.standard_pronunciation.pathmp3
+	    word.expire = Date.now() + 60*60*2 * 1000 // in 2 hours
+	    word.male = val.standard_pronunciation.sex === 'm'
+	    word.user = val.standard_pronunciation.username
+
+	    r.push(word)
+	}
+	return r
+    }
+}
+
 
 
 /* Main */

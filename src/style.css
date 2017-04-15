@@ -67,3 +67,11 @@
 #preferences input {
   width: 100%;
 }
+
+#forvo_pronounced-words-search__table {
+  width: 100%;
+}
+
+#forvo_pronounced-words-search__table th {
+  text-align: left;
+}

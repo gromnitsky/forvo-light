@@ -58,6 +58,49 @@
       </p>
     </script>
 
+    <script type="text/mustache" id="tmpl_forvo_pronounced-words-search">
+      <table id="forvo_pronounced-words-search__table">
+	<thead>
+	  <tr>
+	    <th><i class="fa fa-music"></i></th>
+	    <th><i class="fa fa-thumbs-o-up"></i></th>
+	    <th><i class="fa fa-language"></i></th>
+	    <th><i class="fa fa-globe"></i></th>
+	    <th>S</th>
+	    <th><i class="fa fa-user-o"></i></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {{ #items }}
+	  <tr>
+	    <td>
+	      <a href="{{ mp3 }}"><i class="fa fa-play-circle"></i></a>
+	      {{ original }}
+	    </td>
+	    <td>
+	      {{ #upvotes }} +{{ upvotes }}</i> {{ /upvotes }}
+	      {{ #downvotes }} -{{ downvotes }} {{ /downvotes }}
+	    </td>
+	    <td>
+	      {{ lang }}
+	    </td>
+	    <td>
+	      {{ country }}
+	    </td>
+
+	    <td>
+	      {{ #male }} <i class="fa fa-mars"></i> {{ /male }}
+	      {{ ^male }} <i class="fa fa-venus"></i> {{ /male }}
+	    </td>
+	    <td>
+	      {{ user }}
+	    </td>
+	  </tr>
+	  {{ /items }}
+	</tbody>
+      </table>
+    </script>
+
   </head>
 
   <body>
