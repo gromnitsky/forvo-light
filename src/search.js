@@ -3,7 +3,7 @@
 let lang = require('./lang')
 
 exports.parse_query = function(str = '') {
-    let m = str.match(/^(\.\S+|\.)?(.*)/)
+    let m = str.trim().match(/^(\.\S+|\.)?(.*)/)
     let [t, q] = m.slice(1,3)
 
     let type

@@ -24,6 +24,8 @@ suite('misc', function() {
 	assert.deepEqual(search.parse_query(),
 			 { type: 'pronounced-words-search', q: '' })
 
+	assert.deepEqual(search.parse_query(' .'),
+			 { type: 'word-pronunciations', q: '' })
 	assert.deepEqual(search.parse_query('.'),
 			 { type: 'word-pronunciations', q: '' })
 	assert.deepEqual(search.parse_query('. hello  world'),
