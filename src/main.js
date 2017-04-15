@@ -26,6 +26,7 @@ class Page {
     }
 
     render() {
+	console.info(`${this.constructor.name}: render()`)
 	let id = this.template_id.replace(/^#tmpl_/, '')
 	this.container.innerHTML = Mustache.render(`<div id=${id}>` + this.template.innerHTML + '</div>', this)
 	if (this.post_render) this.post_render()
@@ -80,12 +81,12 @@ class PageSearch extends Page {
 	this.langlist = lang.list()
 	this.history = new search.History()
 	this.history.load()
-
-	console.info('PageSearch')
     }
 
     post_render() {
 	this.attach('form', 'submit', this.submit)
+
+	this.$('form select').value = conf.location_search.get('l') || "-"
 
 	// auto-submit the form
 	let form_input = this.$('form input')
@@ -97,6 +98,21 @@ class PageSearch extends Page {
 	this.$('#search__output').innerHTML = html
     }
 
+    server_opt_set() {
+	if (!conf.debug) return true
+
+	let opt = localStorage.getItem('forvo-light-server-opt')
+	if (!opt) return false
+
+	opt = opt.replace(/\s+/g, ' ').trim().split(/\s+/)
+	search.forvo = {
+	    protocol: opt[0],
+	    host: opt[1],
+	    port: opt[2]
+	}
+	return true
+    }
+
     submit(event) {
 	event.preventDefault()
 
@@ -105,22 +121,14 @@ class PageSearch extends Page {
 	    this.output('No API key')
 	    return
 	}
-
-	if (conf.debug) {
-	    let opt = localStorage.getItem('forvo-light-server-opt')
-	    if (!opt) {
-		this.output('Debug mode requires <i>Server options</i>')
-		return
-	    }
-	    opt = opt.replace(/\s+/g, ' ').trim().split(/\s+/)
-	    search.forvo = {
-		protocol: opt[0],
-		host: opt[1],
-		port: opt[2]
-	    }
+	if (!this.server_opt_set()) {
+	    this.output('Debug mode requires <i>Server options</i>')
+	    return
 	}
-	let query = search.parse_query(this.$('input').value)
-	let url = search.req_url(apikey, query, this.$('select').value)
+
+	let query = search.parse_query(this.$('form input').value)
+	let lang = this.$('form select').value
+	let url = search.req_url(apikey, query, lang)
 	if (!url) {
 	    this.output('Invalid query')
 	    return
@@ -135,13 +143,13 @@ class PageSearch extends Page {
 	    console.log(data)
 
 	    this.history.add(query.q)
-	    this.url_update(query.q)
+	    this.url_update(query, lang)
 
 	    let widget
 	    switch (query.type) {
 	    case 'word-pronunciations':
-		this.output('TODO')
-		return
+		widget = new ForvoPronouncedWordsSearch('#search__output', data)
+		break
 	    case 'top20':
 		this.output('TODO')
 		return
@@ -152,8 +160,9 @@ class PageSearch extends Page {
 	})
     }
 
-    url_update(q) {
-	conf.location_search.set('q', q)
+    url_update(query, l) {
+	conf.location_search.set('q', search.query_make(query))
+	conf.location_search.set('l', l)
 	window.history.replaceState({}, '', `${location.pathname}?${conf.location_search}${location.hash}`)
     }
 }
@@ -169,18 +178,27 @@ class ForvoPronouncedWordsSearch extends Page {
 	for (let val of data.items) {
 	    let word = {}
 	    word.original = val.original
-	    word.lang = val.standard_pronunciation.code
-	    word.country = val.standard_pronunciation.country_code
+	    if (val.num_pronunciations !== undefined) {
+		word.link = () => { // FIXME
+		    let params = new URLSearchParams(conf.location_search)
+		    params.set('q', `. ${word.original}`)
+		    return `${location.pathname}?${params}${location.hash}`
+		}
+	    }
+	    if (val.standard_pronunciation) val = val.standard_pronunciation
 
-	    word.upvotes = val.standard_pronunciation.num_positive_votes
-	    word.downvotes = val.standard_pronunciation.num_votes - word.upvotes
+	    word.lang = val.code
+	    word.country = val.country_code || val.country
+
+	    word.upvotes = val.num_positive_votes
+	    word.downvotes = val.num_votes - word.upvotes
 	    if (word.upvotes === 0) word.upvotes = null
 	    if (word.downvotes === 0) word.downvotes = null
 
-	    word.mp3 = val.standard_pronunciation.pathmp3
+	    word.mp3 = val.pathmp3
 	    word.expire = Date.now() + 60*60*2 * 1000 // in 2 hours
-	    word.male = val.standard_pronunciation.sex === 'm'
-	    word.user = val.standard_pronunciation.username
+	    word.male = val.sex === 'm'
+	    word.user = val.username
 
 	    r.push(word)
 	}

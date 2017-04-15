@@ -12,8 +12,7 @@
     <script type="text/mustache" id="tmpl_search">
       <form>
 	<select title="Optional" tabindex="2">
-	  <option value disabled selected>Limit to language</option>
-	  <option value>(Any language)</option>
+	  <option value="-">(Any language)</option>
 	  {{ #langlist }}
 	  <option value="{{ code }}">{{ en }}</option>
 	  {{ /langlist }}
@@ -88,7 +87,8 @@
 	  <tr>
 	    <td>
 	      <a href="{{ mp3 }}"><i class="fa fa-play-circle"></i></a>
-	      {{ original }}
+	      {{ #link }} <a href="{{ link }}">{{ original }}</a> {{ /link }}
+	      {{ ^link }} {{ original }} {{ /link }}
 	    </td>
 	    <td>
 	      {{ #male }} <i class="fa fa-mars"></i> {{ /male }}

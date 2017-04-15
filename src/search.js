@@ -2,7 +2,7 @@
 
 let lang = require('./lang')
 
-exports.parse_query = function(str = '') {
+exports.parse_query = function(str = '') { // FIXME
     let m = str.trim().match(/^(\.\S+|\.)?(.*)/)
     let [t, q] = m.slice(1,3)
 
@@ -29,6 +29,15 @@ exports.parse_query = function(str = '') {
     return { type, q }
 }
 
+exports.query_make = function(query) { // FIXME
+    let type = {
+	'word-pronunciations': '.',
+	'top20': '.top20',
+	'pronounced-words-search': ''
+    }
+    return [type[query.type], query.q].join(' ').trim()
+}
+
 exports.forvo = {
     protocol: 'https',
     host: 'apifree.forvo.com',
@@ -38,7 +47,7 @@ exports.forvo = {
 // query -- a result from parse_query()
 exports.req_url = function(apikey, query, lang_code) {
     if (!query || !apikey) return null
-    if (lang_code && !lang.is_valid(lang_code)) return null
+    if (lang_code && lang_code !== '-' && !lang.is_valid(lang_code)) return null
 
     let url = `${exports.forvo.protocol}://${exports.forvo.host}${exports.forvo.port === 80 ? "" : ":"+exports.forvo.port}/key/${apikey}/format/json/action`
 
