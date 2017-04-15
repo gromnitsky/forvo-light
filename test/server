@@ -1,0 +1,102 @@
+#!/usr/bin/env node
+
+'use strict';
+
+let http = require('http')
+let url = require('url')
+let fs = require('fs')
+let Transform = require('stream').Transform
+
+class Jsonp extends Transform {
+    constructor(callback, opt) {
+	super(opt)
+	this.first_chunk = true
+	this.callback = callback
+    }
+
+    _transform(data, enc, next) {
+	if (this.first_chunk) {
+	    this.push(`${this.callback}(\n`)
+	    this.first_chunk = false
+	}
+	this.push(data)
+	next()
+    }
+
+    _flush(next) {
+	this.push(')')
+	next()
+    }
+}
+
+// a flag to prevent a double erroring during a request
+let request_had_error = false
+
+let log =  console.error.bind(console, 'server:')
+
+let errx = function(res, code, msg) {
+    if (!request_had_error) {
+	res.statusCode = code
+	res.statusMessage = msg
+	res.end()
+    }
+    log(msg instanceof Error ? msg : `ERROR: ${msg}`)
+    request_had_error = true
+}
+
+let listen = function(srv) {
+    srv.listen(process.env.PORT || 3000,
+	       function() {
+		   log('Listening: http://' +
+		       this.address().address + ":" + this.address().port)
+	       })
+}
+
+let server = http.createServer(function(req, res) {
+    request_had_error = false
+    if (req.method !== "GET") {
+	errx(res, 501, "not implemented")
+	return
+    }
+
+    let purl = url.parse(req.url, true)
+    if (!purl.query.callback) {
+	errx(res, 412, "`?callback=str` param is required")
+	return
+    }
+
+    let m = req.url.match('/action/([^/]+)/[^/]+/([^/]+)')
+    if (!m) {
+	errx(res, 400, 'bad request')
+	return
+    }
+    let [type, param] = m.slice(1,3)
+
+    let file
+    switch (type) {
+    case 'word-pronunciations':
+	file = 'cat.json'
+	break
+    case 'top20':
+	errx(res, 501, 'TODO')
+	return
+    default:
+	file = 'cat-search.json'
+    }
+
+    res.setHeader('Content-Type', 'application/javascript')
+    let rs = fs.createReadStream(__dirname + '/data/' + file)
+    rs.pipe(new Jsonp(purl.query.callback)).pipe(res)
+})
+
+server.on('error', function(err) {
+    log(err)
+})
+
+server.on('clientError', function(err, socket) {
+    socket.write('HTTP/1.1 400 Bad Request\r\n')
+    socket.write('Content-Length: 0\r\n')
+    socket.end('\r\n')
+})
+
+listen(server)

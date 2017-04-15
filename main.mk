@@ -70,3 +70,13 @@ $(out)/src/main.browserify.js: $(js.ccache)/main.js
 
 $(out)/src/main.browserify.js: $(js.dest)
 compile: $(out)/src/main.browserify.js
+
+
+
+.PHONY: server
+server: kill
+	$(mk)/test/server &
+
+.PHONY: kill
+kill:
+	-pkill -f 'node $(mk)/test/server'
