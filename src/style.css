@@ -68,10 +68,21 @@
   width: 100%;
 }
 
+/* Widgets */
+
 #forvo_pronounced-words-search__table {
   width: 100%;
+  border-collapse: collapse;
 }
 
 #forvo_pronounced-words-search__table th {
   text-align: left;
+}
+
+#forvo_pronounced-words-search__table tr {
+  word-wrap: break-word;
+}
+
+#forvo_pronounced-words-search__table tr:nth-child(even) {
+  background-color: #e6e6e6;
 }
