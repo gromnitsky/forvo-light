@@ -4,6 +4,9 @@
 
 let assert = require('assert')
 
+let Storage = require('dom-storage')
+global.localStorage = new Storage(null, { strict: true })
+
 let search = require('../src/search')
 let lang = require('../src/lang')
 
@@ -69,6 +72,23 @@ suite('History', function() {
 	let h = new search.History(3)
 	h.add(1).add(2).add(3)
 	assert.deepEqual([...h], [3,2,1])
-	assert.deepEqual(Array.from(h), [3,2,1])
+    })
+
+    test('save/load', function() {
+	let h = new search.History(3)
+	h.add(1).add(2).add(3)
+	assert.deepEqual(JSON.parse(localStorage.getItem('forvo-light-history')), [3,2,1])
+
+	localStorage.setItem('forvo-light-history', null)
+	h.load()
+	assert.deepEqual(h._arr, [3,2,1])
+
+	localStorage.setItem('forvo-light-history', JSON.stringify({foo:1}))
+	h.load()
+	assert.deepEqual(h._arr, [3,2,1])
+
+	localStorage.setItem('forvo-light-history', JSON.stringify([]))
+	h.load()
+	assert.deepEqual(h._arr, [])
     })
 })

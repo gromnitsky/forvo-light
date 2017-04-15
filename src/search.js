@@ -67,7 +67,22 @@ class History {
 	}
 
 	this._arr.unshift(elm)
+	this.save()
 	return this
+    }
+
+    save() {
+	localStorage.setItem('forvo-light-history', JSON.stringify(this._arr))
+    }
+
+    load() {
+	let json
+	try {
+	    json = JSON.parse(localStorage.getItem('forvo-light-history'))
+	} catch (e) {
+	    return
+	}
+	if (json instanceof Array) this._arr = json
     }
 
     [Symbol.iterator]() {
