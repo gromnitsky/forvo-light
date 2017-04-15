@@ -40,6 +40,10 @@
   height: 2em;
 }
 
+#search form {
+  margin-bottom: 1em;
+}
+
 /* <input> */
 #search form > div > div {
   overflow: hidden;

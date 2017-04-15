@@ -3,9 +3,11 @@
 require("babel-polyfill")
 let Mustache = require('mustache')
 let URLSearchParams = require('url-search-params')
+let jsonp = require('jsonp')
 
 let meta = require('../package.json')
 let lang = require('./lang')
+let search = require('./search')
 
 class Page {
     constructor(container_id, template_id) {
@@ -77,9 +79,39 @@ class PageSearch extends Page {
 	this.attach('form', 'submit', this.submit)
     }
 
+    output(html) {
+	this.$('#search__output').innerHTML = html
+    }
+
     submit(event) {
 	event.preventDefault()
-	console.log('query')
+
+	let apikey = localStorage.getItem('forvo-light-api-key')
+	if (!apikey) {
+	    this.output('No API key')
+	    return
+	}
+
+	search.forvo = {	// FIXME
+	    protocol: 'http',
+	    host: '127.0.0.1',
+	    port: 3000
+	}
+	let query = search.parse_query(this.$('input').value)
+	let url = search.req_url(apikey, query, this.$('select').value)
+	if (!url) {
+	    this.output('Invalid query')
+	    return
+	}
+
+	console.log(url)
+	jsonp(url, {timeout: 2000}, (err, data) => {
+	    if (err) {
+		this.output(err)
+		return
+	    }
+	    console.log(data)
+	})
     }
 }
 

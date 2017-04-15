@@ -41,6 +41,8 @@ suite('misc', function() {
 	assert.equal(search.req_url(), null)
 	assert.equal(search.req_url('XXX'), null)
 
+	assert.equal(search.req_url('XXX', search.parse_query()), null)
+
 	assert.equal(search.req_url('XXX', search.parse_query('avaux')),
 		     'https://apifree.forvo.com/key/XXX/format/json/action/pronounced-words-search/search/avaux')
 	assert.equal(search.req_url('XXX', search.parse_query('. cat shark')),

@@ -29,21 +29,29 @@ exports.parse_query = function(str = '') {
     return { type, q }
 }
 
+exports.forvo = {
+    protocol: 'https',
+    host: 'apifree.forvo.com',
+    port: 80
+}
+
 // query -- a result from parse_query()
 exports.req_url = function(apikey, query, lang_code) {
     if (!query || !apikey) return null
     if (lang_code && !lang.is_valid(lang_code)) return null
 
-    let url = `https://apifree.forvo.com/key/${apikey}/format/json/action`
+    let url = `${exports.forvo.protocol}://${exports.forvo.host}${exports.forvo.port === 80 ? "" : ":"+exports.forvo.port}/key/${apikey}/format/json/action`
 
     switch (query.type) {
     case 'word-pronunciations':
+	if (!query.q) return null
 	url += `/word-pronunciations/word/${encodeURIComponent(query.q)}`
 	break
     case 'top20':
 	url += '/popular-pronounced-words/limit/20'
 	break
     default:
+	if (!query.q) return null
 	url += `/pronounced-words-search/search/${encodeURIComponent(query.q)}`
     }
 

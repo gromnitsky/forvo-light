@@ -53,6 +53,8 @@ let listen = function(srv) {
 }
 
 let server = http.createServer(function(req, res) {
+    console.log(req.url)
+
     request_had_error = false
     if (req.method !== "GET") {
 	errx(res, 501, "not implemented")
@@ -77,7 +79,7 @@ let server = http.createServer(function(req, res) {
     case 'word-pronunciations':
 	file = 'cat.json'
 	break
-    case 'top20':
+    case 'popular-pronounced-words':
 	errx(res, 501, 'TODO')
 	return
     default:

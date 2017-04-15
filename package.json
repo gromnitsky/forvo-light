@@ -10,7 +10,8 @@
     "dependencies": {
 	"mustache": "~2.3.0",
 	"babel-polyfill": "~6.23.0",
-	"url-search-params": "~0.7.0"
+	"url-search-params": "~0.7.0",
+	"jsonp": "~0.2.1"
     },
     "devDependencies": {
 	"dom-storage": "~2.0.2"

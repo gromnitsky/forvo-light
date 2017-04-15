@@ -12,7 +12,7 @@
     <script type="text/mustache" id="tmpl_search">
       <form>
 	<select title="Optional" tabindex="2">
-	  <option disabled selected>Limit to language</option>
+	  <option value disabled selected>Limit to language</option>
 	  <option value>(Any language)</option>
 	  {{ #langlist }}
 	  <option value="{{ code }}">{{ en }}</option>
@@ -27,6 +27,8 @@
 	  </div>
 	</div>
       </form>
+
+      <div id="search__output"></div>
     </script>
 
     <script type="text/mustache" id="tmpl_history">
