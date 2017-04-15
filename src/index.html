@@ -39,8 +39,21 @@
       <form>
 	<label>
 	  Your Forvo API key:
-	  <input type="search" spellcheck="false" value="{{ apikey }}">
+	  <input id="preferences__apikey"
+		 type="search" spellcheck="false" value="{{ apikey }}">
 	</label>
+
+	{{ #debug }}
+	<p>
+	<fieldset>
+	  <legend>Debug</legend>
+	  <label>Server options: <code>protocol host port</code></label>
+	  <input id="preferences__debug__server-opt"
+		 spellcheck="false" value="{{ server_opts }}">
+	</fieldset>
+	</p>
+	{{ /debug }}
+
 	<p>
 	  <button>Save</button>
 	</p>

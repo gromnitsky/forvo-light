@@ -43,6 +43,8 @@ class PagePreferences extends Page {
     constructor(container) {
 	super(container, '#tmpl_preferences')
 	this.apikey = localStorage.getItem('forvo-light-api-key')
+	this.server_opts = localStorage.getItem('forvo-light-server-opt')
+	this.debug = conf.debug
     }
 
     post_render() {
@@ -55,7 +57,10 @@ class PagePreferences extends Page {
 	let btn = this.$('button')
 	btn.disabled = true
 
-	localStorage.setItem('forvo-light-api-key', this.$('input').value)
+	localStorage.setItem('forvo-light-api-key',
+			     this.$('#preferences__apikey').value)
+	localStorage.setItem('forvo-light-server-opt',
+			     this.$('#preferences__debug__server-opt').value)
 
 	setTimeout( () => {
 	    btn.disabled = false
@@ -73,10 +78,19 @@ class PageSearch extends Page {
     constructor(container) {
 	super(container, '#tmpl_search')
 	this.langlist = lang.list()
+	this.history = new search.History()
+	this.history.load()
+
+	console.info('PageSearch')
     }
 
     post_render() {
 	this.attach('form', 'submit', this.submit)
+
+	// auto-submit the form
+	let form_input = this.$('form input')
+	form_input.value = conf.location_search.get('q')
+	if (form_input.value.trim()) this.$('form button').click()
     }
 
     output(html) {
@@ -92,12 +106,18 @@ class PageSearch extends Page {
 	    return
 	}
 
-	search.forvo = {	// FIXME
-	    protocol: 'http',
-	    host: '127.0.0.1',
-	    port: 8080
-//	    host: '192.168.197.115',
-//	    port: 9880
+	if (conf.debug) {
+	    let opt = localStorage.getItem('forvo-light-server-opt')
+	    if (!opt) {
+		this.output('Debug mode requires <i>Server options</i>')
+		return
+	    }
+	    opt = opt.replace(/\s+/g, ' ').trim().split(/\s+/)
+	    search.forvo = {
+		protocol: opt[0],
+		host: opt[1],
+		port: opt[2]
+	    }
 	}
 	let query = search.parse_query(this.$('input').value)
 	let url = search.req_url(apikey, query, this.$('select').value)
@@ -114,6 +134,9 @@ class PageSearch extends Page {
 	    }
 	    console.log(data)
 
+	    this.history.add(query.q)
+	    this.url_update(query.q)
+
 	    let widget
 	    switch (query.type) {
 	    case 'word-pronunciations':
@@ -128,6 +151,11 @@ class PageSearch extends Page {
 	    widget.render()
 	})
     }
+
+    url_update(q) {
+	conf.location_search.set('q', q)
+	window.history.replaceState({}, '', `${location.pathname}?${conf.location_search}${location.hash}`)
+    }
 }
 
 class ForvoPronouncedWordsSearch extends Page {
@@ -141,8 +169,8 @@ class ForvoPronouncedWordsSearch extends Page {
 	for (let val of data.items) {
 	    let word = {}
 	    word.original = val.original
-	    word.lang = val.standard_pronunciation.langname
-	    word.country = val.standard_pronunciation.country
+	    word.lang = val.standard_pronunciation.code
+	    word.country = val.standard_pronunciation.country_code
 
 	    word.upvotes = val.standard_pronunciation.num_positive_votes
 	    word.downvotes = val.standard_pronunciation.num_votes - word.upvotes
@@ -163,6 +191,12 @@ class ForvoPronouncedWordsSearch extends Page {
 
 
 /* Main */
+
+// app global options
+let conf = new function() {
+    this.location_search = new URLSearchParams(location.search)
+    this.debug = this.location_search.get('debug')
+}
 
 let page_navigate = function(node) {
     let aaa = node.parentElement.querySelectorAll('a')
