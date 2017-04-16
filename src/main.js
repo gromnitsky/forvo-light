@@ -25,7 +25,7 @@ class Page {
     }
 
     render() {
-	console.info(`${this.constructor.name}: render()`)
+	log(this.constructor.name, 'render()')
 	let id = this.template_id.replace(/^#tmpl_/, '')
 	this.container.innerHTML = Mustache.render(`<div id=${id}>` + this.template.innerHTML + '</div>', this)
 	if (this.post_render) this.post_render()
@@ -139,14 +139,14 @@ class PageSearch extends Page {
 	let button = this.$('form button')
 	button.disabled = true
 
-	console.log(url)
+	log('jsonp URL', url)
 	jsonp(url, {timeout: 15000}, (err, data) => {
 	    button.disabled = false
 	    if (err) {
 		this.output(`${search.forvo.host}:${search.forvo.port} ${err}`)
 		return
 	    }
-	    console.log(data)
+	    log('jsonp result', data)
 
 	    this.history.add(search.query_restore(query))
 	    this.url_update(query, lang)
@@ -225,8 +225,10 @@ let conf = new function() {
     this.debug = this.lsearch().get('debug')
 }
 
+let log = conf.debug ? console.log.bind(console) : () => {}
+
 let page_navigate = function() {
-    console.info('page_navigate')
+    log('*** page_navigate()')
     let usp = new search.URLSearchParams(location.hash)
     let mode = usp.get('m') || 'search'
 
