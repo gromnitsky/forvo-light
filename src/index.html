@@ -86,7 +86,9 @@
 	  {{ #items }}
 	  <tr>
 	    <td>
-	      <a href="{{ mp3 }}"><i class="fa fa-play-circle"></i></a>
+	      <div style="display: inline-block; width: 20px; text-align: center">
+		<a href="#" data-mp3="{{ mp3 }}" class="player"><i class="fa fa-play-circle"></i></a>
+	      </div>
 	      {{ #link }} <a href="{{ link }}">{{ original }}</a> {{ /link }}
 	      {{ ^link }} {{ original }} {{ /link }}
 	    </td>

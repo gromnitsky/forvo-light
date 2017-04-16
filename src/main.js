@@ -21,7 +21,14 @@ class Page {
 
     attach(selector, event, fn) {
 	let node = this.$(selector)
-	node.addEventListener(event, (evt) => fn.call(this, evt, node))
+	if (node instanceof NodeList) {
+	    for (let idx = 0; idx < node.length; ++idx) {
+		let el = node[idx]
+		el.addEventListener(event, (evt) => fn.call(this, evt, el))
+	    }
+	} else {
+	    node.addEventListener(event, (evt) => fn.call(this, evt, node))
+	}
     }
 
     render() {
@@ -213,8 +220,41 @@ class ForvoPronouncedWordsSearch extends Page {
 	}
 	return r
     }
-}
 
+    post_render() {
+	this.attach('.player', 'click', this.player)
+    }
+
+    player(event, node) {
+	event.preventDefault()
+	 // Android 2.3 doesn't support dataset
+	let mp3 = node.getAttribute('data-mp3')
+	log('player URL', mp3)
+
+	let audio = document.createElement('audio')
+	let source = document.createElement('source')
+	source.type= 'audio/mpeg'
+        source.src = mp3
+	audio.appendChild(source)
+
+	let loadAudioPlay = () => {
+	    // a spinner
+	    node.innerHTML = '<i class="fa fa-spinner fa-spin fa-fw"></i>'
+        }
+        let errorAudioPlay = () => {
+	    node.innerHTML = '<i class="fa fa-exclamation-triangle"></i>'
+        }
+        let endAudioPlay = () => {
+	    node.innerHTML = '<i class="fa fa-play-circle"></i>'
+        }
+
+	audio.addEventListener('loadstart', loadAudioPlay)
+        source.addEventListener('error', errorAudioPlay)
+        audio.addEventListener('ended', endAudioPlay)
+
+	audio.play()
+    }
+}
 
 
 /* Main */
