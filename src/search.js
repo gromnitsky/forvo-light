@@ -2,40 +2,34 @@
 
 let lang = require('./lang')
 
-exports.parse_query = function(str = '') { // FIXME
-    let m = str.trim().match(/^(\.\S+|\.)?(.*)/)
-    let [t, q] = m.slice(1,3)
+exports.query_parse = function(str = '') {
+    str = str.trim()
+    if (str.length === 0) return { type: '.pws', q: '' }
 
-    let type
-    switch (t) {
-    case '.':
-	// all possible pronunciations for 1 particular word
-	type = 'word-pronunciations'
-	break
-    case '.wp':
-	type = 'word-pronunciations'
-	break
-    case '.top20':
-	type = 'top20'
-	break
-    default:
-	// a number of pronunciations for a matched string w/ 1
-	// top-rated pronunciation for each result
-	type = 'pronounced-words-search'
+    let parts = str.split(/\s+/)
+    if (parts[0][0] !== '.') return { type: '.pws', q: parts.join(' ') }
+
+    let cmd = {
+	'.pws': '.pws',		// pronounced-words-search
+	'.wp': '.wp',		// word-pronunciations
+	'.': '.wp',		// an alias for word-pronunciations
+	'.top': '.top'
     }
-
-    q = (q || '').replace(/\s+/g, ' ').trim()
-
-    return { type, q }
+    let type = cmd[parts[0]]
+    if (!type) type = '.pws'
+    return {type, q: parts.slice(1).join(' ') }
 }
 
-exports.query_make = function(query) { // FIXME
+exports.query_restore = function(query) {
+    if (!query) return ""
     let type = {
-	'word-pronunciations': '.',
-	'top20': '.top20',
-	'pronounced-words-search': ''
+	'.pws': '',
+	'.wp': '.',
+	'.top': '.top'
     }
-    return [type[query.type], query.q].join(' ').trim()
+    if (!(query.type in type))
+	throw new Error(`invalid query type: ${query.type}`)
+    return (type[query.type] + ' ' + query.q).trim()
 }
 
 exports.forvo = {
@@ -44,7 +38,7 @@ exports.forvo = {
     port: 80
 }
 
-// query -- a result from parse_query()
+// query -- a result from query_parse()
 exports.req_url = function(apikey, query, lang_code) {
     if (!query || !apikey) return null
     if (lang_code && lang_code !== '-' && !lang.is_valid(lang_code)) return null
@@ -52,11 +46,11 @@ exports.req_url = function(apikey, query, lang_code) {
     let url = `${exports.forvo.protocol}://${exports.forvo.host}${exports.forvo.port === 80 ? "" : ":"+exports.forvo.port}/key/${apikey}/format/json/action`
 
     switch (query.type) {
-    case 'word-pronunciations':
+    case '.wp':
 	if (!query.q) return null
 	url += `/word-pronunciations/word/${encodeURIComponent(query.q)}`
 	break
-    case 'top20':
+    case '.top':
 	url += '/popular-pronounced-words/limit/20'
 	break
     default:

@@ -126,7 +126,7 @@ class PageSearch extends Page {
 	    return
 	}
 
-	let query = search.parse_query(this.$('form input').value)
+	let query = search.query_parse(this.$('form input').value)
 	let lang = this.$('form select').value
 	let url = search.req_url(apikey, query, lang)
 	if (!url) {
@@ -142,18 +142,19 @@ class PageSearch extends Page {
 	    }
 	    console.log(data)
 
-	    this.history.add(query.q)
+	    this.history.add(search.query_restore(query))
 	    this.url_update(query, lang)
 
 	    let widget
 	    switch (query.type) {
-	    case 'word-pronunciations':
+	    case '.wp':
 		widget = new ForvoPronouncedWordsSearch('#search__output', data)
 		break
-	    case 'top20':
+	    case 'top':
 		this.output('TODO')
 		return
 	    default:
+		// pronounced-words-search
 		widget = new ForvoPronouncedWordsSearch('#search__output', data)
 	    }
 	    widget.render()
@@ -161,12 +162,13 @@ class PageSearch extends Page {
     }
 
     url_update(query, l) {
-	conf.location_search.set('q', search.query_make(query))
+	conf.location_search.set('q', search.query_restore(query))
 	conf.location_search.set('l', l)
 	window.history.replaceState({}, '', `${location.pathname}?${conf.location_search}${location.hash}`)
     }
 }
 
+// handles both .wp & .pws
 class ForvoPronouncedWordsSearch extends Page {
     constructor(container, data) {
 	super(container, '#tmpl_forvo_pronounced-words-search')
