@@ -103,7 +103,7 @@ class PageSearch extends Page {
 	let opt = localStorage.getItem('forvo-light-server-opt')
 	if (!opt) return false
 
-	opt = opt.replace(/\s+/g, ' ').trim().split(/\s+/)
+	opt = opt.trim().split(/\s+/)
 	search.forvo = {
 	    protocol: opt[0],
 	    host: opt[1],
@@ -129,12 +129,19 @@ class PageSearch extends Page {
 	let lang = this.$('form select').value
 	let url = search.req_url(apikey, query, lang)
 	if (!url) {
-	    this.output('Invalid query')
+	    this.output('Incomplete query')
 	    return
 	}
 
+	// show a spinner
+	this.output('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>')
+	// disable the button
+	let button = this.$('form button')
+	button.disabled = true
+
 	console.log(url)
-	jsonp(url, {timeout: 2000}, (err, data) => {
+	jsonp(url, {timeout: 15000}, (err, data) => {
+	    button.disabled = false
 	    if (err) {
 		this.output(`${search.forvo.host}:${search.forvo.port} ${err}`)
 		return
