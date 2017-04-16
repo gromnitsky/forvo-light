@@ -1,5 +1,7 @@
 'use strict';
 
+let URLSearchParams = require('url-search-params')
+
 let lang = require('./lang')
 
 exports.query_parse = function(str = '') {
@@ -106,3 +108,10 @@ class History {
 }
 
 exports.History = History
+
+// url_hash -- a string like '#/foo/bar?q=1&w=2'
+exports.URLSearchParams = function(url_hash) {
+    let p = url_hash.split('?')
+    if (p.length === 1) return new URLSearchParams("")
+    return new URLSearchParams(p[1])
+}

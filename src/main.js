@@ -2,7 +2,6 @@
 
 require("babel-polyfill")
 let Mustache = require('mustache')
-let URLSearchParams = require('url-search-params')
 let jsonp = require('jsonp')
 
 let meta = require('../package.json')
@@ -86,11 +85,11 @@ class PageSearch extends Page {
     post_render() {
 	this.attach('form', 'submit', this.submit)
 
-	this.$('form select').value = conf.location_search.get('l') || "-"
+	this.$('form select').value = conf.lsearch().get('l') || "-"
 
 	// auto-submit the form
 	let form_input = this.$('form input')
-	form_input.value = conf.location_search.get('q')
+	form_input.value = conf.lsearch().get('q')
 	if (form_input.value.trim()) this.$('form button').click()
     }
 
@@ -150,7 +149,7 @@ class PageSearch extends Page {
 	    case '.wp':
 		widget = new ForvoPronouncedWordsSearch('#search__output', data)
 		break
-	    case 'top':
+	    case '.top':
 		this.output('TODO')
 		return
 	    default:
@@ -161,10 +160,12 @@ class PageSearch extends Page {
 	})
     }
 
-    url_update(query, l) {
-	conf.location_search.set('q', search.query_restore(query))
-	conf.location_search.set('l', l)
-	window.history.replaceState({}, '', `${location.pathname}?${conf.location_search}${location.hash}`)
+    url_update(query, lang) {
+	let ls = conf.lsearch()
+	ls.set('q', search.query_restore(query))
+	ls.set('l', lang)
+	// FIXME: do a push instead but check if the prev state !== the cur
+	window.history.replaceState({}, '', `${location.pathname}#?${ls}`)
     }
 }
 
@@ -177,15 +178,14 @@ class ForvoPronouncedWordsSearch extends Page {
 
     transform(data) {
 	let r = []
+	let ls = conf.lsearch()
+
 	for (let val of data.items) {
 	    let word = {}
 	    word.original = val.original
 	    if (val.num_pronunciations !== undefined) {
-		word.link = () => { // FIXME
-		    let params = new URLSearchParams(conf.location_search)
-		    params.set('q', `. ${word.original}`)
-		    return `${location.pathname}?${params}${location.hash}`
-		}
+		ls.set('q', `. ${word.original}`)
+		word.link = `${location.pathname}#?${ls}`
 	    }
 	    if (val.standard_pronunciation) val = val.standard_pronunciation
 
@@ -214,37 +214,52 @@ class ForvoPronouncedWordsSearch extends Page {
 
 // app global options
 let conf = new function() {
-    this.location_search = new URLSearchParams(location.search)
-    this.debug = this.location_search.get('debug')
+    this.lsearch = () => new search.URLSearchParams(location.hash)
+    this.debug = this.lsearch().get('debug')
 }
 
-let page_navigate = function(node) {
-    let aaa = node.parentElement.querySelectorAll('a')
-    // IE11 doesn't support forEach for NodeList
-    for (let idx = 0; idx < aaa.length; ++idx) aaa[idx].className = ''
-    node.className = 'selected'
+let page_navigate = function() {
+    console.info('page_navigate')
+    let usp = new search.URLSearchParams(location.hash)
+    let mode = usp.get('m') || 'search'
+
+    let aaaa = document.querySelectorAll('#nav a')
+
+    // mark the current node as 'user selected'
+    for (let idx = 0; idx < aaaa.length; ++idx) {
+	let node = aaaa[idx]
+	let params = new search.URLSearchParams(node.hash)
+	node.className = mode === params.get('m') ? 'selected' : ""
+    }
 
     let page
-    if (node.hash.match(/^#\/about\/?/)) {
+    switch (mode) {
+    case 'about':
 	page = new PageAbout('#app')
-    } else if (node.hash.match(/^#\/history\/?/)) {
+	break
+    case 'history':
 	page = new PageHistory('#app')
-    } else if (node.hash.match(/^#\/preferences\/?/)) {
+	break
+    case 'preferences':
 	page = new PagePreferences('#app')
-    } else {
+	break
+    default:
 	page = new PageSearch('#app')
+    }
+
+    // propagate all the current query string opts from node.hash to
+    // other <a>s in the navigation panel
+    for (let idx = 0; idx < aaaa.length; ++idx) {
+	let node = aaaa[idx]
+	let params = new search.URLSearchParams(node.hash)
+	usp.set('m', params.get('m'))
+	node.href = '#?' + usp.toString()
     }
 
     page.render()
 }
 
-let page_select = function() {
-    let mode = location.hash.match('^#/([a-z]+)/?') || []
-    page_navigate(document.querySelector(`#nav > a[href="#/${mode[1]}"]`)
-		  || document.querySelector('#nav > a'))
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    window.addEventListener("hashchange", page_select)
-    page_select()
+    window.addEventListener("hashchange", page_navigate)
+    page_navigate()
 })
