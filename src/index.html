@@ -31,7 +31,11 @@
     </script>
 
     <script type="text/mustache" id="tmpl_history">
-      History TODO
+      <ul>
+	{{ #history }}
+	<li> <a href="{{ link }}">{{ item }}</a></li>
+	{{ /history }}
+      </ul>
     </script>
 
     <script type="text/mustache" id="tmpl_preferences">

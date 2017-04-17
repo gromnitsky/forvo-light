@@ -114,6 +114,18 @@ class PagePreferences extends Page {
 class PageHistory extends Page {
     constructor(container) {
 	super(container, '#tmpl_history')
+
+	let hist = new search.History()
+	hist.load()
+	this.history = []
+	for (let item of hist)
+	    this.history.push({
+		item,
+		link: this.link({
+		    'q': item,
+		    'm': 'search'
+		})
+	    })
     }
 }
 
