@@ -31,13 +31,14 @@ class NavService {
 class Page {
     constructor(container_id, template_id) {
 	this.container = document.querySelector(container_id)
-	this.$ = (str) => {
-	    let nodes = this.container.querySelectorAll(str)
-	    return nodes.length === 1 ? nodes[0] : nodes
-	}
 	this.template_id = template_id
 	this.template = document.querySelector(template_id)
 	this.nav = new NavService('#nav a')
+    }
+
+    $(str) {
+	let nodes = this.container.querySelectorAll(str)
+	return nodes.length === 1 ? nodes[0] : nodes
     }
 
     attach(selector, event, fn) {
@@ -52,7 +53,7 @@ class Page {
 	}
     }
 
-    link(pairs = {}) {
+    hyperlink(pairs = {}) {
 	let ls = this.lsearch()
 	for (let key in pairs) ls.set(key, pairs[key])
 	return `${location.pathname}#?${ls}`
@@ -121,7 +122,7 @@ class PageHistory extends Page {
 	for (let item of hist)
 	    this.history.push({
 		item,
-		link: this.link({
+		link: this.hyperlink({
 		    'q': item,
 		    'm': 'search'
 		})
@@ -233,7 +234,7 @@ class PageSearch extends Page {
 
     url_update(query, lang) {
 	// FIXME: do a push instead but check if the prev state !== the cur
-	window.history.replaceState({}, '', this.link({
+	window.history.replaceState({}, '', this.hyperlink({
 	    'q': search.query_restore(query),
 	    'l': lang
 	}))
@@ -309,7 +310,7 @@ class ForvoPronouncedWordsSearch extends Page {
 	    let word = {}
 	    word.original = val.original
 	    if (val.num_pronunciations !== undefined)
-		word.link = this.link({'q': `. ${word.original}`})
+		word.link = this.hyperlink({'q': `. ${word.original}`})
 	    if (val.standard_pronunciation) val = val.standard_pronunciation
 
 	    word.lang = val.code
