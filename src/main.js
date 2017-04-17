@@ -343,19 +343,19 @@ class ForvoPronouncedWordsSearch extends Page {
 
 	let loadstart = () => {
 	    // a spinner
-	    node.innerHTML = '<i class="fa fa-spinner fa-spin fa-fw"></i>'
+	    node.innerHTML = '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>'
         }
         let pause = () => {
-	    node.innerHTML = '<i class="fa fa-pause"></i>'
+	    node.innerHTML = '<i class="fa fa-pause fa-2x"></i>'
         }
         let ended = () => {
-	    node.innerHTML = '<i class="fa fa-play-circle"></i>'
+	    node.innerHTML = '<i class="fa fa-play-circle fa-2x"></i>'
 	    node.ForvoLight.audio_ended = true
         }
 
         let error = (evt) => { // doesn't fire on Android 2.3.4
 	    console.log('player error', evt)
-	    node.innerHTML = '<i class="fa fa-exclamation-triangle"></i>'
+	    node.innerHTML = '<i class="fa fa-exclamation-triangle fa-2x"></i>'
 	    node.ForvoLight.audio_ended = true
         }
         let suspend = (evt) => {

@@ -75,14 +75,18 @@
   border-collapse: collapse;
 }
 
-#forvo_pronounced-words-search__table th {
-  text-align: left;
+#forvo_pronounced-words-search__table td {
+  word-break: break-word;
 }
 
-#forvo_pronounced-words-search__table tr {
-  word-wrap: break-word;
+#forvo_pronounced-words-search__table tr:nth-child(4n+2),
+#forvo_pronounced-words-search__table tr:nth-child(4n+4) {
+  border-bottom: 1px solid lightgray;
 }
 
-#forvo_pronounced-words-search__table tr:nth-child(even) {
+/*
+#forvo_pronounced-words-search__table tr:nth-child(4n+3),
+#forvo_pronounced-words-search__table tr:nth-child(4n+4) {
   background-color: #e6e6e6;
 }
+*/
