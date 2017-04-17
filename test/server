@@ -73,6 +73,10 @@ let server = http.createServer(function(req, res) {
 	return
     }
     let [type, param] = m.slice(1,3)
+    if ('#api' === decodeURIComponent(param)) {
+	res.end(`${purl.query.callback}(["Account disabled."])`)
+	return
+    }
 
     let file
     switch (type) {

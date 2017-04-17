@@ -150,10 +150,16 @@ class PageSearch extends Page {
 	jsonp(url, {timeout: 15000}, (err, data) => {
 	    button.disabled = false
 	    if (err) {
-		this.output(`${search.forvo.host}:${search.forvo.port} ${err}`)
+		this.output(`<code>${search.forvo.protocol}://${search.forvo.host}:${search.forvo.port}</code> ${err}`)
 		return
 	    }
 	    log('jsonp result', data)
+	    try {
+		this.validate_response(data)
+	    } catch (err) {
+		this.output(err)
+		return
+	    }
 
 	    this.history.add(search.query_restore(query))
 	    this.url_update(query, lang)
@@ -180,6 +186,11 @@ class PageSearch extends Page {
 	ls.set('l', lang)
 	// FIXME: do a push instead but check if the prev state !== the cur
 	window.history.replaceState({}, '', `${location.pathname}#?${ls}`)
+    }
+
+    validate_response(json) {
+	if (!json || json === {}) throw new Error('Empty response')
+	if (json instanceof Array) throw new Error(`Forvo API: ${json}`)
     }
 }
 
