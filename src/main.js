@@ -70,8 +70,9 @@ class PageAbout extends Page {
 class PagePreferences extends Page {
     constructor(container) {
 	super(container, '#tmpl_preferences')
-	this.apikey = localStorage.getItem('forvo-light-api-key')
-	this.server_opts = localStorage.getItem('forvo-light-server-opt')
+	this._opts = ['apikey', 'langlist', 'server']
+	for (let name of this._opts)
+	    this[name] = localStorage.getItem(`forvo-light-${name}`)
 	this.debug = conf.debug
     }
 
@@ -85,10 +86,9 @@ class PagePreferences extends Page {
 	let btn = this.$('button')
 	btn.disabled = true
 
-	localStorage.setItem('forvo-light-api-key',
-			     this.$('#preferences__apikey').value)
-	localStorage.setItem('forvo-light-server-opt',
-			     this.$('#preferences__debug__server-opt').value)
+	for (let name of this._opts)
+	    localStorage.setItem(`forvo-light-${name}`,
+				 this.$(`#preferences__${name}`).value)
 
 	setTimeout( () => {
 	    btn.disabled = false
@@ -128,7 +128,7 @@ class PageSearch extends Page {
     server_opt_set() {
 	if (!conf.debug) return true
 
-	let opt = localStorage.getItem('forvo-light-server-opt')
+	let opt = localStorage.getItem('forvo-light-server')
 	if (!opt) return false
 
 	opt = opt.trim().split(/\s+/)
@@ -143,7 +143,7 @@ class PageSearch extends Page {
     submit(event) {
 	event.preventDefault()
 
-	let apikey = localStorage.getItem('forvo-light-api-key')
+	let apikey = localStorage.getItem('forvo-light-apikey')
 	if (!apikey) {
 	    this.output('No API key')
 	    return

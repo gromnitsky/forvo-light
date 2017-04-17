@@ -36,19 +36,29 @@
 
     <script type="text/mustache" id="tmpl_preferences">
       <form>
-	<label>
-	  Your Forvo API key:
-	  <input id="preferences__apikey"
-		 type="search" spellcheck="false" value="{{ apikey }}">
-	</label>
+	<p>
+	  <label>
+	    Your Forvo API key:
+	    <input id="preferences__apikey"
+		   type="search" spellcheck="false" value="{{ apikey }}">
+	  </label>
+	</p>
+	<p>
+	  <label>
+	    Favourite languages list (4 max):
+	    <input id="preferences__langlist"
+		   placeholder="en ua de fr"
+		   type="search" spellcheck="false" value="{{ langlist }}">
+	  </label>
+	</p>
 
 	{{ #debug }}
 	<p>
 	<fieldset>
 	  <legend>Debug</legend>
 	  <label>Server options: <code>protocol host port</code></label>
-	  <input id="preferences__debug__server-opt"
-		 spellcheck="false" value="{{ server_opts }}">
+	  <input id="preferences__server"
+		 spellcheck="false" value="{{ server }}">
 	</fieldset>
 	</p>
 	{{ /debug }}
