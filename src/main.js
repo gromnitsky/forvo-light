@@ -251,6 +251,10 @@ class PageSearch extends Page {
 class ForvoPronouncedWordsSearch extends Page {
     constructor(container, data, opt) {
 	super(container, '#tmpl_forvo_pronounced-words-search')
+	if (!data || !data.items || !data.items.length) {
+	    this.error = 'Not found'
+	    return
+	}
 	this.opt = opt || {}
 	this.data = data
 	this.items = this.transform()
@@ -291,8 +295,11 @@ class ForvoPronouncedWordsSearch extends Page {
 	for (let val of this.data.items) {
 	    let word = {}
 	    word.original = val.original
-	    if (val.num_pronunciations !== undefined)
+
+	    if (val.num_pronunciations !== undefined) {
 		word.link = this.hyperlink({'q': `. ${word.original}`})
+		word.more = val.num_pronunciations
+	    }
 	    if (val.standard_pronunciation) val = val.standard_pronunciation
 
 	    word.lang = val.code
@@ -368,9 +375,9 @@ class ForvoPronouncedWordsSearch extends Page {
 	    node.innerHTML = '<i class="fa fa-exclamation-triangle fa-2x"></i>'
 	    node.ForvoLight.audio_ended = true
         }
-        let suspend = (evt) => {
-	    console.log('player suspend', evt)
-	    node.innerHTML = 'S'
+        let suspend = () => {
+	    // spinner
+	    node.innerHTML = '<i class="fa fa-snowflake-o fa-spin fa-fw fa-2x"></i>'
         }
         let abort = (evt) => {
 	    console.log('player abort', evt)
