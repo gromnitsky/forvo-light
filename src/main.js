@@ -234,10 +234,8 @@ class ForvoPronouncedWordsSearch extends Page {
     }
 
     lang_parse() {
-	let MAX_LANGS = 4
-
 	if (!this.opt.langlist) return []
-	let ll = this.opt.langlist.trim().split(/\s+/).slice(0, MAX_LANGS)
+	let ll = this.opt.langlist.trim().split(/\s+/)
 	for (let val of ll) {
 	    if (!lang.is_valid(val))
 		throw new Error(`This favourite lang is incorrect: ${val}`)
