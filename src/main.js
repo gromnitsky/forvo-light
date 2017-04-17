@@ -263,48 +263,30 @@ class ForvoPronouncedWordsSearch extends Page {
 	    if (!lang.is_valid(val))
 		throw new Error(`This favourite lang is incorrect: ${val}`)
 	}
-	return ll.reverse()
+	return [...new Set(ll)].reverse()
     }
 
-    sort() {
+    // in place
+    sort(items) {
 	let langlist = this.lang_parse()
 
-	let item_extract = (a, b) => {
-	    if (a.standard_pronunciation) a = a.standard_pronunciation
-	    if (b.standard_pronunciation) b = b.standard_pronunciation
-	    return [a, b]
-	}
 	let lang_rate = (item) => {
-	    let pos = langlist.indexOf(item.code)
-	    return langlist.indexOf(item.code) === -1 ? 0 : pos + 1
-	}
-	let country = (item) => {
-	    return item.country_code || item.country || ''
+	    let pos = langlist.indexOf(item.lang)
+	    return langlist.indexOf(item.lang) === -1 ? 0 : pos + 1
 	}
 
-	this.data.items.sort(firstBy( (a, b) => {
-	    [a, b] = item_extract(a, b)
+	items.sort(firstBy( (a, b) => {
 	    return lang_rate(b) - lang_rate(a)
 	}).thenBy( (a, b) => {
-	    [a, b] = item_extract(a, b)
-	    return a.code.localeCompare(b.code)
+	    return a.lang.localeCompare(b.lang)
 	}).thenBy( (a, b) => {
-	    [a, b] = item_extract(a, b)
-	    return b.rate - a.rate
+	    return b._rate - a._rate
 	}).thenBy( (a, b) => {
-	    [a, b] = item_extract(a, b)
-	    return country(a).localeCompare(country(b))
+	    return a.country.localeCompare(b.country)
 	}))
     }
 
     transform() {
-	try {
-	    this.sort()
-	} catch (err) {
-	    this.error = err
-	    return
-	}
-
 	let r = []
 	for (let val of this.data.items) {
 	    let word = {}
@@ -314,12 +296,13 @@ class ForvoPronouncedWordsSearch extends Page {
 	    if (val.standard_pronunciation) val = val.standard_pronunciation
 
 	    word.lang = val.code
-	    word.country = val.country_code || val.country
+	    word.country = val.country_code || val.country || ''
 
 	    word.upvotes = val.num_positive_votes
 	    word.downvotes = val.num_votes - word.upvotes
 	    if (word.upvotes === 0) word.upvotes = null
 	    if (word.downvotes === 0) word.downvotes = null
+	    word._rate = val.rate || 0 // for sorting only
 
 	    word.mp3 = val.pathmp3
 	    word.expire = Date.now() + 60*60*2 * 1000 // in 2 hours
@@ -328,6 +311,14 @@ class ForvoPronouncedWordsSearch extends Page {
 
 	    r.push(word)
 	}
+
+	try {
+	    this.sort(r)
+	} catch (err) {
+	    this.error = err
+	    return
+	}
+
 	return r
     }
 
