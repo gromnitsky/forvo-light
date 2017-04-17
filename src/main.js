@@ -8,6 +8,26 @@ let meta = require('../package.json')
 let lang = require('./lang')
 let search = require('./search')
 
+class NavService {
+    constructor(selector) {
+	this.anchors = document.querySelectorAll(selector)
+	// make NodeList a decent fellow
+	this.anchors[Symbol.iterator] = Array.prototype[Symbol.iterator]
+    }
+
+    // propagate all the current hash query string opts to all the nav
+    // elements
+    update() {
+	console.log(location.hash)
+	let usp = new search.URLSearchParams(location.hash)
+	for (let node of this.anchors) {
+	    let params = new search.URLSearchParams(node.hash)
+	    usp.set('m', params.get('m'))
+	    node.href = '#?' + usp.toString()
+	}
+    }
+}
+
 class Page {
     constructor(container_id, template_id) {
 	this.container = document.querySelector(container_id)
@@ -17,6 +37,7 @@ class Page {
 	}
 	this.template_id = template_id
 	this.template = document.querySelector(template_id)
+	this.nav = new NavService('#nav a')
     }
 
     attach(selector, event, fn) {
@@ -186,6 +207,7 @@ class PageSearch extends Page {
 	ls.set('l', lang)
 	// FIXME: do a push instead but check if the prev state !== the cur
 	window.history.replaceState({}, '', `${location.pathname}#?${ls}`)
+	this.nav.update()
     }
 
     validate_response(json) {
@@ -325,14 +347,10 @@ let log = conf.debug ? console.log.bind(console) : () => {}
 
 let page_navigate = function() {
     log('*** page_navigate()')
-    let usp = new search.URLSearchParams(location.hash)
-    let mode = usp.get('m') || 'search'
-
-    let aaaa = document.querySelectorAll('#nav a')
-
+    let nav = new NavService('#nav a')
+    let mode = new search.URLSearchParams(location.hash).get('m') || 'search'
     // mark the current node as 'user selected'
-    for (let idx = 0; idx < aaaa.length; ++idx) {
-	let node = aaaa[idx]
+    for (let node of nav.anchors) {
 	let params = new search.URLSearchParams(node.hash)
 	node.className = mode === params.get('m') ? 'selected' : ""
     }
@@ -352,15 +370,7 @@ let page_navigate = function() {
 	page = new PageSearch('#app')
     }
 
-    // propagate all the current query string opts from node.hash to
-    // other <a>s in the navigation panel
-    for (let idx = 0; idx < aaaa.length; ++idx) {
-	let node = aaaa[idx]
-	let params = new search.URLSearchParams(node.hash)
-	usp.set('m', params.get('m'))
-	node.href = '#?' + usp.toString()
-    }
-
+    nav.update()
     page.render()
 }
 
