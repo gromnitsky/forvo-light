@@ -227,30 +227,75 @@ class ForvoPronouncedWordsSearch extends Page {
 
     player(event, node) {
 	event.preventDefault()
+	node.ForvoLight = node.ForvoLight || {}
+	let audio = node.ForvoLight.audio
+	if (audio) {
+	    log(`player: reusing; audio.paused=${audio.paused}`)
+	    if (audio.paused || node.ForvoLight.audio_ended) {
+		log('player: PLAY')
+		node.ForvoLight.audio_ended = false
+		audio.play()
+	    } else {
+		log('player: PAUSE')
+		audio.pause()
+	    }
+	    return
+	}
+
+	node.ForvoLight.audio = document.createElement('audio')
+	audio = node.ForvoLight.audio
+
 	 // Android 2.3 doesn't support dataset
 	let mp3 = node.getAttribute('data-mp3')
 	log('player URL', mp3)
+        audio.src = mp3
 
-	let audio = document.createElement('audio')
-	let source = document.createElement('source')
-	source.type= 'audio/mpeg'
-        source.src = mp3
-	audio.appendChild(source)
-
-	let loadAudioPlay = () => {
+	let loadstart = () => {
 	    // a spinner
 	    node.innerHTML = '<i class="fa fa-spinner fa-spin fa-fw"></i>'
         }
-        let errorAudioPlay = () => {
-	    node.innerHTML = '<i class="fa fa-exclamation-triangle"></i>'
+        let pause = () => {
+	    node.innerHTML = '<i class="fa fa-pause"></i>'
         }
-        let endAudioPlay = () => {
+        let ended = () => {
 	    node.innerHTML = '<i class="fa fa-play-circle"></i>'
+	    node.ForvoLight.audio_ended = true
         }
 
-	audio.addEventListener('loadstart', loadAudioPlay)
-        source.addEventListener('error', errorAudioPlay)
-        audio.addEventListener('ended', endAudioPlay)
+        let error = (evt) => { // doesn't fire on Android 2.3.4
+	    console.log('player error', evt)
+	    node.innerHTML = '<i class="fa fa-exclamation-triangle"></i>'
+	    node.ForvoLight.audio_ended = true
+        }
+        let suspend = (evt) => {
+	    console.log('player suspend', evt)
+	    node.innerHTML = 'S'
+        }
+        let abort = (evt) => {
+	    console.log('player abort', evt)
+	    node.innerHTML = 'A'
+        }
+        let emptied = (evt) => {
+	    console.log('player emptied', evt)
+	    node.innerHTML = 'E'
+        }
+        let stalled = (evt) => {
+	    console.log('player stalled', evt)
+	    node.innerHTML = 'B'
+        }
+
+	audio.addEventListener('loadstart', loadstart)
+	// Android 2.3.4 after audio.play() after audio.pause()
+	audio.addEventListener('durationchange', loadstart)
+	audio.addEventListener('play', loadstart)
+	audio.addEventListener('pause', pause)
+        audio.addEventListener('ended', ended)
+
+        audio.addEventListener('error', error)
+        audio.addEventListener('suspend', suspend)
+        audio.addEventListener('abort', abort)
+        audio.addEventListener('emptied', emptied)
+        audio.addEventListener('stalled', stalled)
 
 	audio.play()
     }
