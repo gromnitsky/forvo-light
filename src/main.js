@@ -52,6 +52,16 @@ class Page {
 	}
     }
 
+    link(pairs = {}) {
+	let ls = this.lsearch()
+	for (let key in pairs) ls.set(key, pairs[key])
+	return `${location.pathname}#?${ls}`
+    }
+
+    lsearch() {
+	return new search.URLSearchParams(location.hash)
+    }
+
     render() {
 	log(this.constructor.name, 'render()')
 	if (this.error) {
@@ -118,11 +128,11 @@ class PageSearch extends Page {
     post_render() {
 	this.attach('form', 'submit', this.submit)
 
-	this.$('form select').value = conf.lsearch().get('l') || "-"
+	this.$('form select').value = this.lsearch().get('l') || "-"
 
 	// auto-submit the form
 	let form_input = this.$('form input')
-	form_input.value = conf.lsearch().get('q')
+	form_input.value = this.lsearch().get('q')
 	if (form_input.value.trim()) this.$('form button').click()
     }
 
@@ -210,11 +220,11 @@ class PageSearch extends Page {
     }
 
     url_update(query, lang) {
-	let ls = conf.lsearch()
-	ls.set('q', search.query_restore(query))
-	ls.set('l', lang)
 	// FIXME: do a push instead but check if the prev state !== the cur
-	window.history.replaceState({}, '', `${location.pathname}#?${ls}`)
+	window.history.replaceState({}, '', this.link({
+	    'q': search.query_restore(query),
+	    'l': lang
+	}))
 	this.nav.update()
     }
 
@@ -283,15 +293,11 @@ class ForvoPronouncedWordsSearch extends Page {
 	}
 
 	let r = []
-	let ls = conf.lsearch()
-
 	for (let val of this.data.items) {
 	    let word = {}
 	    word.original = val.original
-	    if (val.num_pronunciations !== undefined) {
-		ls.set('q', `. ${word.original}`)
-		word.link = `${location.pathname}#?${ls}`
-	    }
+	    if (val.num_pronunciations !== undefined)
+		word.link = this.link({'q': `. ${word.original}`})
 	    if (val.standard_pronunciation) val = val.standard_pronunciation
 
 	    word.lang = val.code
@@ -397,8 +403,8 @@ class ForvoPronouncedWordsSearch extends Page {
 
 // app global options
 let conf = new function() {
-    this.lsearch = () => new search.URLSearchParams(location.hash)
-    this.debug = this.lsearch().get('debug')
+    let usp = new search.URLSearchParams(location.hash)
+    this.debug = usp.get('debug')
 }
 
 let log = conf.debug ? console.log.bind(console) : () => {}
