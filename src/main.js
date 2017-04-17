@@ -3,6 +3,7 @@
 require("babel-polyfill")
 let Mustache = require('mustache')
 let jsonp = require('jsonp')
+let firstBy = require('thenby')
 
 let meta = require('../package.json')
 let lang = require('./lang')
@@ -18,7 +19,6 @@ class NavService {
     // propagate all the current hash query string opts to all the nav
     // elements
     update() {
-	console.log(location.hash)
 	let usp = new search.URLSearchParams(location.hash)
 	for (let node of this.anchors) {
 	    let params = new search.URLSearchParams(node.hash)
@@ -54,6 +54,11 @@ class Page {
 
     render() {
 	log(this.constructor.name, 'render()')
+	if (this.error) {
+	    this.container.innerHTML = this.error
+	    return
+	}
+
 	let id = this.template_id.replace(/^#tmpl_/, '')
 	this.container.innerHTML = Mustache.render(`<div id=${id}>` + this.template.innerHTML + '</div>', this)
 	if (this.post_render) this.post_render()
@@ -144,6 +149,7 @@ class PageSearch extends Page {
 	event.preventDefault()
 
 	let apikey = localStorage.getItem('forvo-light-apikey')
+	let langlist = localStorage.getItem('forvo-light-langlist')
 	if (!apikey) {
 	    this.output('No API key')
 	    return
@@ -188,14 +194,16 @@ class PageSearch extends Page {
 	    let widget
 	    switch (query.type) {
 	    case '.wp':
-		widget = new ForvoPronouncedWordsSearch('#search__output', data)
+		widget = new ForvoPronouncedWordsSearch('#search__output',
+							data, { langlist })
 		break
 	    case '.top':
 		this.output('TODO')
 		return
 	    default:
 		// pronounced-words-search
-		widget = new ForvoPronouncedWordsSearch('#search__output', data)
+		widget = new ForvoPronouncedWordsSearch('#search__output',
+							data, { langlist })
 	    }
 	    widget.render()
 	})
@@ -218,16 +226,68 @@ class PageSearch extends Page {
 
 // handles both .wp & .pws
 class ForvoPronouncedWordsSearch extends Page {
-    constructor(container, data) {
+    constructor(container, data, opt) {
 	super(container, '#tmpl_forvo_pronounced-words-search')
-	this.items = this.transform(data)
+	this.opt = opt || {}
+	this.data = data
+	this.items = this.transform()
     }
 
-    transform(data) {
+    lang_parse() {
+	let MAX_LANGS = 4
+
+	if (!this.opt.langlist) return []
+	let ll = this.opt.langlist.trim().split(/\s+/).slice(0, MAX_LANGS)
+	for (let val of ll) {
+	    if (!lang.is_valid(val))
+		throw new Error(`This favourite lang is incorrect: ${val}`)
+	}
+	return ll.reverse()
+    }
+
+    sort() {
+	let langlist = this.lang_parse()
+
+	let item_extract = (a, b) => {
+	    if (a.standard_pronunciation) a = a.standard_pronunciation
+	    if (b.standard_pronunciation) b = b.standard_pronunciation
+	    return [a, b]
+	}
+	let lang_rate = (item) => {
+	    let pos = langlist.indexOf(item.code)
+	    return langlist.indexOf(item.code) === -1 ? 0 : pos + 1
+	}
+	let country = (item) => {
+	    return item.country_code || item.country || ''
+	}
+
+	this.data.items.sort(firstBy( (a, b) => {
+	    [a, b] = item_extract(a, b)
+	    return lang_rate(b) - lang_rate(a)
+	}).thenBy( (a, b) => {
+	    [a, b] = item_extract(a, b)
+	    return a.code.localeCompare(b.code)
+	}).thenBy( (a, b) => {
+	    [a, b] = item_extract(a, b)
+	    return b.rate - a.rate
+	}).thenBy( (a, b) => {
+	    [a, b] = item_extract(a, b)
+	    return country(a).localeCompare(country(b))
+	}))
+    }
+
+    transform() {
+	try {
+	    this.sort()
+	} catch (err) {
+	    this.error = err
+	    return
+	}
+
 	let r = []
 	let ls = conf.lsearch()
 
-	for (let val of data.items) {
+	for (let val of this.data.items) {
 	    let word = {}
 	    word.original = val.original
 	    if (val.num_pronunciations !== undefined) {
