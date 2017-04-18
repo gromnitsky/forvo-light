@@ -102,9 +102,11 @@ class PagePreferences extends Page {
 	let btn = this.$('button')
 	btn.disabled = true
 
-	for (let name of this._opts)
-	    localStorage.setItem(`forvo-light-${name}`,
-				 this.$(`#preferences__${name}`).value)
+	for (let name of this._opts) {
+	    let el = this.$(`#preferences__${name}`)
+	    if (!el) continue
+	    localStorage.setItem(`forvo-light-${name}`, el.value)
+	}
 
 	setTimeout( () => {
 	    btn.disabled = false
