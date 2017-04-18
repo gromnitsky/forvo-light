@@ -8,6 +8,7 @@ let firstBy = require('thenby')
 let meta = require('../package.json')
 let lang = require('./lang')
 let search = require('./search')
+let Android = require('./android')
 
 class NavService {
     constructor(selector) {
@@ -189,6 +190,11 @@ class PageSearch extends Page {
 	let url = search.req_url(apikey, query, lang)
 	if (!url) {
 	    this.output('Incomplete query')
+	    return
+	}
+
+	if (!android.is_online()) {
+	    this.output('The device is offline')
 	    return
 	}
 
@@ -450,6 +456,7 @@ let page_navigate = function() {
     }
 
     nav.update()
+    conf.page = page
     page.render()
 }
 
@@ -458,13 +465,4 @@ document.addEventListener('DOMContentLoaded', () => {
     page_navigate()
 })
 
-if (window.cordova) {
-    let deviceready = function() {
-	document.addEventListener('backbutton', (evt) => {
-            evt.preventDefault()
-            if (confirm('Exit?')) navigator.app.exitApp()
-	})
-    }
-
-    document.addEventListener('deviceready', deviceready)
-}
+let android = new Android({ conf, PageSearch, log })

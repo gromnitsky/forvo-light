@@ -40,6 +40,10 @@
   height: 2em;
 }
 
+#search button {
+  width: 4em;
+}
+
 #search form {
   margin-bottom: 1em;
 }

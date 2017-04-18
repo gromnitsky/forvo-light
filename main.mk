@@ -92,19 +92,30 @@ cordova := nodever exec 4.8 cordova
 cordova.src := $(mk)/cordova
 cordova.dest := $(out)/cordova
 
-$(cordova.dest)/config.xml: $(cordova.src)/config.xml
+$(cordova.dest)/config.xml: $(cordova.src)/config.xml package.json
 	$(mkdir)
 	erb -T - -r json $< > $@
 
-$(cordova.dest)/config.xml: $(compile.all)
-
-$(cordova.dest)/.target: $(cordova.dest)/config.xml
-	cp $(cordova.src)/*.png $(cordova.dest)
-	[ -d $(dir $@)/www ] || (cd $(dir $@) && ln -sf ../src www)
-	-cd $(dir $@) && $(cordova) platforms add android
+$(cordova.dest)/.target.setup: $(cordova.dest)/config.xml
+	for idx in platform plugins www; do rm -rf $(dir $@)/$$idx; done
+	cp $(cordova.src)/*.png $(cordova.dest)/
+	cd $(dir $@) && ln -sf ../src www
+	cd $(dir $@) && $(cordova) platforms add android
 	rm -rf $(dir $@)/platforms/android/res/drawable*
+	cd $(dir $@) && $(cordova) plugin --noregistry --link --searchpath ../node_modules add cordova-plugin-keyboard cordova-plugin-network-information
+	touch $@
+
+$(cordova.dest)/.target.build: $(cordova.dest)/.target.setup $(compile.all)
 	cd $(dir $@) && $(cordova) build
 	touch $@
 
+.PHONY: cordova-setup
+cordova-setup: $(cordova.dest)/.target.setup
+
 .PHONY: cordova
-cordova: $(cordova.dest)/.target
+cordova: $(cordova.dest)/.target.build
+
+.PHONY: cordova-install
+cordova-install: $(cordova.dest)/.target.build
+	-adb uninstall gromnitsky.forvolight
+	adb install $(cordova.dest)/platforms/android/ant-build/MainActivity-debug.apk
