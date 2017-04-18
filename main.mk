@@ -97,7 +97,7 @@ $(cordova.dest)/config.xml: $(cordova.src)/config.xml package.json
 	erb -T - -r json $< > $@
 
 $(cordova.dest)/.target.setup: $(cordova.dest)/config.xml
-	for idx in platform plugins www; do rm -rf $(dir $@)/$$idx; done
+	for idx in platforms plugins www; do rm -rf $(dir $@)/$$idx; done
 	cp $(cordova.src)/*.png $(cordova.dest)/
 	cd $(dir $@) && ln -sf ../src www
 	cd $(dir $@) && $(cordova) platforms add android
