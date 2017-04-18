@@ -313,7 +313,8 @@ class ForvoPronouncedWordsSearch extends Page {
 	    if (word.downvotes === 0) word.downvotes = null
 	    word._rate = val.rate || 0 // for sorting only
 
-	    word.mp3 = val.pathmp3
+	    // https in Audio() supported from Android 3.1 onwards only
+	    word.mp3 = val.pathmp3.replace(/^https/, 'http')
 	    word.expire = Date.now() + 60*60*2 * 1000 // in 2 hours
 	    word.male = val.sex === 'm'
 	    word.user = val.username
@@ -352,13 +353,14 @@ class ForvoPronouncedWordsSearch extends Page {
 	    return
 	}
 
-	node.ForvoLight.audio = document.createElement('audio')
+	node.ForvoLight.audio = new Audio()
 	audio = node.ForvoLight.audio
 
 	 // Android 2.3 doesn't support dataset
 	let mp3 = node.getAttribute('data-mp3')
-	log('player URL', mp3)
+	log(`player URL: ${mp3}`)
         audio.src = mp3
+	audio.type = 'audio/mpeg'
 
 	let loadstart = () => {
 	    // a spinner
