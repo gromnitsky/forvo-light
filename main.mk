@@ -5,7 +5,7 @@ compile:
 
 out := .
 mk := $(dir $(lastword $(MAKEFILE_LIST)))
-npm.root := /opt/lib/node_modules
+npm.root := $(or $(wildcard /opt/lib/node_modules), $(shell npm -g root))
 export NODE_PATH := $(realpath node_modules)
 
 mkdir = @mkdir -p $(dir $@)
