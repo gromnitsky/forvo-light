@@ -2,6 +2,8 @@
 
 A lightweight web-client to forvo.com.
 
+<img src='http://ultraimg.com/images/2017/04/18/0xrM.png'>
+
 ## Requirements
 
 * Node 6.x
@@ -20,6 +22,26 @@ $ make -f ../forvo-light/main.mk
 
 Then copy `src/` dir where your webserver expects static files.
 
+## Android
+
+Because I have a silly requirement of using the app on ancient devices
+w/ Android 2.3, you can build the app only if you
+
+* `npm i -g cordova@4.3.0`
+* use a Node version manager,
+  like [nodever](https://github.com/gromnitsky/nodever), for old
+  versions of Cordova don't work w/ modern versions of Node;
+* edit `../forvo-light/main.mk` to make sure that Cordova is being run
+  under Node 4.8.
+
+After this preliminaries, type:
+
+	make -f ../forvo-light/main.mk cordova
+
+It'll take a while, for Cordova will download a bunch of staff in
+`~/.cordova` at its 1st run. The resulting apks should be in
+`cordova/platforms/android/ant-build/`.
+
 ## Usage
 
 You'll need to obtain an API key from Forvo. After the 1st run of the
@@ -36,6 +58,7 @@ w/o React or Angular.
 
 (Not that anybody cares)
 
+* no HTTPS support for `Audio()`
 * `history.replaceState()` doesn't modify `location.hash`
 * `error` event in `Audio()` doesn't get fired in cases of 404,
   invalid format, etc.
