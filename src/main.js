@@ -457,3 +457,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("hashchange", page_navigate)
     page_navigate()
 })
+
+if (window.cordova) {
+    let deviceready = function() {
+	document.addEventListener('backbutton', (evt) => {
+            evt.preventDefault()
+            if (confirm('Exit?')) navigator.app.exitApp()
+	})
+    }
+
+    document.addEventListener('deviceready', deviceready)
+}

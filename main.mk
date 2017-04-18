@@ -2,6 +2,7 @@
 
 .PHONY: compile
 compile:
+compile.all :=
 
 out := .
 mk := $(dir $(lastword $(MAKEFILE_LIST)))
@@ -39,6 +40,7 @@ $(vendor.dest): $(out)/src/%: $(mk)/%
 	$(copy)
 
 compile: $(assets.dest) $(vendor.dest)
+compile.all += $(assets.dest) $(vendor.dest)
 
 
 
@@ -52,6 +54,7 @@ $(js.dest): $(js.ccache)/%.js: $(mk)/src/%.js
 
 $(js.dest): node_modules
 compile: $(js.dest)
+compile.all += $(js.dest)
 
 json.src := $(filter %.json, $(src.files))
 json.dest := $(patsubst $(mk)/src/%.json, $(js.ccache)/%.json, $(json.src))
@@ -61,6 +64,7 @@ $(json.dest): $(js.ccache)/%.json: $(mk)/src/%.json
 	$(copy)
 
 compile: $(json.dest)
+compile.all += $(json.dest)
 
 
 
@@ -70,6 +74,7 @@ $(out)/src/main.browserify.js: $(js.ccache)/main.js
 
 $(out)/src/main.browserify.js: $(js.dest)
 compile: $(out)/src/main.browserify.js
+compile.all += $(out)/src/main.browserify.js
 
 
 
@@ -80,3 +85,26 @@ server: kill
 .PHONY: kill
 kill:
 	-pkill -f 'node $(mk)/test/server'
+
+
+
+cordova := nodever exec 4.8 cordova
+cordova.src := $(mk)/cordova
+cordova.dest := $(out)/cordova
+
+$(cordova.dest)/config.xml: $(cordova.src)/config.xml
+	$(mkdir)
+	erb -T - -r json $< > $@
+
+$(cordova.dest)/config.xml: $(compile.all)
+
+$(cordova.dest)/.target: $(cordova.dest)/config.xml
+	cp $(cordova.src)/*.png $(cordova.dest)
+	[ -d $(dir $@)/www ] || (cd $(dir $@) && ln -sf ../src www)
+	-cd $(dir $@) && $(cordova) platforms add android
+	rm -rf $(dir $@)/platforms/android/res/drawable*
+	cd $(dir $@) && $(cordova) build
+	touch $@
+
+.PHONY: cordova
+cordova: $(cordova.dest)/.target
