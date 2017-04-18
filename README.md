@@ -5,7 +5,7 @@ A lightweight web-client to forvo.com.
 ## Requirements
 
 * Node 6.x
-* `npm i -g browserify babel`
+* `npm i -g browserify babel babel-preset-es2015`
 * GNU Make
 
 ## Compilation
