@@ -60,7 +60,7 @@ exports.req_url = function(apikey, query, lang_code) {
 	url += `/pronounced-words-search/search/${encodeURIComponent(query.q)}`
     }
 
-    if (lang_code) url += `/language/${lang_code}`
+    if (lang_code && lang_code !== '-') url += `/language/${lang_code}`
     return url
 }
 

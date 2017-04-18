@@ -65,6 +65,9 @@ suite('misc', function() {
 	assert.equal(search.req_url('XXX', search.query_parse('. cat shark'),
 				    'en'),
 		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark/language/en')
+	assert.equal(search.req_url('XXX', search.query_parse('. cat shark'),
+				    '-'),
+		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark')
     })
 })
 
