@@ -198,7 +198,7 @@ class PageSearch extends Page {
 	let button = this.$('form button')
 	button.disabled = true
 
-	log('jsonp URL', url)
+	log(`jsonp URL ${url}`)
 	jsonp(url, {timeout: 15000}, (err, data) => {
 	    button.disabled = false
 	    if (err) {
@@ -375,7 +375,7 @@ class ForvoPronouncedWordsSearch extends Page {
         }
 
         let error = (evt) => { // doesn't fire on Android 2.3.4
-	    console.log('player error', evt)
+	    log('player error', evt)
 	    node.innerHTML = '<i class="fa fa-exclamation-triangle fa-2x"></i>'
 	    node.ForvoLight.audio_ended = true
         }
@@ -384,15 +384,15 @@ class ForvoPronouncedWordsSearch extends Page {
 	    node.innerHTML = '<i class="fa fa-snowflake-o fa-spin fa-fw fa-2x"></i>'
         }
         let abort = (evt) => {
-	    console.log('player abort', evt)
+	    log('player abort', evt)
 	    node.innerHTML = 'A'
         }
         let emptied = (evt) => {
-	    console.log('player emptied', evt)
+	    log('player emptied', evt)
 	    node.innerHTML = 'E'
         }
         let stalled = (evt) => {
-	    console.log('player stalled', evt)
+	    log('player stalled', evt)
 	    node.innerHTML = 'B'
         }
 
@@ -422,7 +422,7 @@ let conf = new function() {
     this.debug = usp.get('debug')
 }
 
-let log = conf.debug ? console.log.bind(console) : () => {}
+let log = console.log.bind(console)
 
 let page_navigate = function() {
     log('*** page_navigate()')
