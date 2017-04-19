@@ -344,6 +344,17 @@ class ForvoPronouncedWordsSearch extends Page {
 
     player(event, node) {
 	event.preventDefault()
+
+	if (!android.is_online()) {
+	    alert('The device is offline')
+	    return
+	}
+	let expire = parseInt(node.getAttribute('data-expire'))
+	if (Date.now() > expire) {
+	    alert('The query has expired')
+	    return
+	}
+
 	node.ForvoLight = node.ForvoLight || {}
 	let audio = node.ForvoLight.audio
 	if (audio) {
