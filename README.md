@@ -68,3 +68,5 @@ w/o React or Angular.
 ## License
 
 MIT.
+
+The icon: https://openclipart.org/detail/227474/pirate-parrot
