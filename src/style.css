@@ -72,6 +72,25 @@
   width: 100%;
 }
 
+#history ul {
+  padding: 0;
+  list-style-type: none;
+  font-size: x-large;
+}
+
+#history ul a {
+  display: block;
+  padding: 0.4em 0;
+  text-decoration: none;
+  border-bottom: 1px solid lightgray;
+}
+
+#history ul a:focus,
+#history ul a:hover {
+  background-color: #ffd500;
+  color: #005bbb;
+}
+
 /* Widgets */
 
 #forvo_pronounced-words-search__table {
@@ -87,10 +106,3 @@
 #forvo_pronounced-words-search__table tr:nth-child(4n+4) {
   border-bottom: 1px solid lightgray;
 }
-
-/*
-#forvo_pronounced-words-search__table tr:nth-child(4n+3),
-#forvo_pronounced-words-search__table tr:nth-child(4n+4) {
-  background-color: #e6e6e6;
-}
-*/
