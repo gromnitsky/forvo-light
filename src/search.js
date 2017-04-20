@@ -133,6 +133,7 @@ class QueryCounter {
 	if (!apikey) throw new Error('no apikey')
 	this.apikey = apikey
 	this.db = {}
+	this.db_name = 'forvo-light-query-counter'
 	this.reset_hour = reset_hour
 	this.ranges_set(new Date())
     }
@@ -151,23 +152,35 @@ class QueryCounter {
 	this.max = new Date(today + 60*60*this.reset_hour*1000)
     }
 
+    fmt(d) {
+	return `${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+    }
+
+    min_pretty() {
+	return this.fmt(this.min)
+    }
+
+    max_pretty() {
+	return this.fmt(this.max)
+    }
+
     is_in_range(localtime) {
 	localtime = localtime || Date.parse(new Date().toUTCString())
 	return this.min < localtime && localtime < this.max
     }
 
     toString() {
-	return this.db[this.apikey]
+	return this.db[this.apikey] || 0
     }
 
     save() {
-	localStorage.setItem('forvo-light-req-counter', JSON.stringify(this.db))
+	localStorage.setItem(this.db_name, JSON.stringify(this.db))
     }
 
     load() {
 	let json
 	try {
-	    json = JSON.parse(localStorage.getItem('forvo-light-req-counter'))
+	    json = JSON.parse(localStorage.getItem(this.db_name))
 	} catch (e) {
 	    return
 	}

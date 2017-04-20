@@ -146,14 +146,14 @@ suite('QueryCounter', function() {
 	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
 	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
 	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	assert.deepEqual(JSON.parse(localStorage.getItem('forvo-light-req-counter')), {'XXX': 3})
+	assert.deepEqual(JSON.parse(localStorage.getItem(qc.db_name)), {'XXX': 3})
 
 	// don't load invalid values
-	localStorage.setItem('forvo-light-req-counter', '[]')
+	localStorage.setItem(qc.db_name, '[]')
 	qc.load()
 	assert.deepEqual(qc.db, {'XXX': 3})
 
-	localStorage.setItem('forvo-light-req-counter', '{"foo": 1}')
+	localStorage.setItem(qc.db_name, '{"foo": 1}')
 	qc.load()
 	assert.deepEqual(qc.db, {"foo": 1})
 
