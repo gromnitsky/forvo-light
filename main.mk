@@ -102,7 +102,7 @@ $(cordova.dest)/.target.setup: $(cordova.dest)/config.xml
 	cd $(dir $@) && ln -sf ../src www
 	cd $(dir $@) && $(cordova) platforms add android
 	rm -rf $(dir $@)/platforms/android/res/drawable*
-	cd $(dir $@) && $(cordova) plugin --noregistry --link --searchpath ../node_modules add cordova-plugin-network-information
+	cd $(dir $@) && $(cordova) plugin --noregistry --link --searchpath ../node_modules add cordova-plugin-network-information cordova-plugin-inappbrowser
 	touch $@
 
 $(cordova.dest)/.target.build: $(cordova.dest)/.target.setup $(compile.all)

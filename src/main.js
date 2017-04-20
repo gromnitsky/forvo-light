@@ -81,6 +81,15 @@ class PageAbout extends Page {
 	super(container, '#tmpl_about')
 	this.meta = meta
     }
+
+    post_render() {
+	this.attach('a[class="external"]', 'click', this.open_in_browser)
+    }
+
+    open_in_browser(evt, node) {
+	evt.preventDefault()
+	window.open(node.href, '_system')
+    }
 }
 
 class PagePreferences extends Page {
