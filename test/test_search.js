@@ -110,3 +110,54 @@ suite('History', function() {
 	assert.deepEqual(h._arr, [])
     })
 })
+
+suite('QueryCounter', function() {
+    test('is_in_range', function() {
+	let qc = new search.QueryCounter('XXX')
+	let t = new Date('2000-10-10T00:00:00.000Z')
+	qc.ranges_set(t)
+
+	assert(qc.is_in_range(t))
+	assert(!qc.is_in_range(new Date('2000-10-09T22:00:00.000Z')))
+	assert(qc.is_in_range(new Date('2000-10-09T22:00:01.000Z')))
+	assert(!qc.is_in_range(new Date('2000-10-10T22:00:00.000Z')))
+	assert(qc.is_in_range(new Date('2000-10-10T21:59:59.000Z')))
+    })
+
+    test('inc', function() {
+	let qc = new search.QueryCounter('XXX')
+	let t = new Date('2000-10-10T00:00:00.000Z')
+	qc.ranges_set(t)
+
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	assert.equal(qc.db.XXX, 3)
+
+	qc.inc(new Date('2000-10-10T22:00:00.000Z'))
+	assert.equal(qc.db.XXX, 1)
+    })
+
+    test('save/load', function() {
+	let qc = new search.QueryCounter('XXX')
+	let t = new Date('2000-10-10T00:00:00.000Z')
+	qc.ranges_set(t)
+
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	assert.deepEqual(JSON.parse(localStorage.getItem('forvo-light-req-counter')), {'XXX': 3})
+
+	// don't load invalid values
+	localStorage.setItem('forvo-light-req-counter', '[]')
+	qc.load()
+	assert.deepEqual(qc.db, {'XXX': 3})
+
+	localStorage.setItem('forvo-light-req-counter', '{"foo": 1}')
+	qc.load()
+	assert.deepEqual(qc.db, {"foo": 1})
+
+	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
+	assert.equal(qc.db.XXX, 1)
+    })
+})

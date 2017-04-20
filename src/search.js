@@ -4,6 +4,18 @@ let URLSearchParams = require('url-search-params')
 
 let lang = require('./lang')
 
+let isnum = function(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+let pad = function(str) {
+    return ('0'+str).slice(-2)
+}
+
+let ispobj = function(o) {
+    return (o === Object(o)) && !(o instanceof Array)
+}
+
 exports.query_parse = function(str = '') {
     str = str.trim()
     if (str.length === 0) return { type: '.pws', q: '' }
@@ -115,3 +127,52 @@ exports.URLSearchParams = function(url_hash) {
     if (p.length === 1) return new URLSearchParams("")
     return new URLSearchParams(p[1])
 }
+
+class QueryCounter {
+    constructor(apikey, reset_hour = 22) {
+	if (!apikey) throw new Error('no apikey')
+	this.apikey = apikey
+	this.db = {}
+	this.reset_hour = reset_hour
+	this.ranges_set(new Date())
+    }
+
+
+    inc(localtime) {
+	if (!isnum(this.db[this.apikey])) this.db[this.apikey] = 0
+	this.db[this.apikey] = this.is_in_range(localtime) ? this.db[this.apikey] + 1 : 1
+	this.save()
+    }
+
+    ranges_set(localtime) {
+	let today = Date.parse(`${localtime.getUTCFullYear()}-${pad(localtime.getUTCMonth()+1)}-${pad(localtime.getUTCDate())}`)
+	let yesterday = today - 60*60*24*1000
+	this.min = new Date(yesterday + 60*60*this.reset_hour*1000)
+	this.max = new Date(today + 60*60*this.reset_hour*1000)
+    }
+
+    is_in_range(localtime) {
+	localtime = localtime || Date.parse(new Date().toUTCString())
+	return this.min < localtime && localtime < this.max
+    }
+
+    toString() {
+	return this.db[this.apikey]
+    }
+
+    save() {
+	localStorage.setItem('forvo-light-req-counter', JSON.stringify(this.db))
+    }
+
+    load() {
+	let json
+	try {
+	    json = JSON.parse(localStorage.getItem('forvo-light-req-counter'))
+	} catch (e) {
+	    return
+	}
+	if (ispobj(json)) this.db = json
+    }
+}
+
+exports.QueryCounter = QueryCounter
