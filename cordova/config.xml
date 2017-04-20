@@ -8,9 +8,9 @@
     <description>
       <%= json['description'] %>
     </description>
-    <author email="alexander.gromnitsky@gmail.com"
-	    href="https://github.com/gromnitsky/forvo-light">
-      <%= json['author'] %>
+    <author email="<%= json['author']['email'] %>"
+	    href="<%= json['homepage'] %>">
+      <%= json['author']['name'] %>
     </author>
     <content src="index.html" />
     <access origin="*" />
