@@ -47,6 +47,13 @@
 		   type="search" spellcheck="false" value="{{ apikey }}">
 	  </label>
 	</p>
+	{{ #qc }}
+	<p>
+	  Requests counter (local time): <br>
+	  {{ qc.min_pretty }} &lt; {{ qc }} &lt; {{ qc.max_pretty }}
+	</p>
+	{{ /qc }}
+
 	<p>
 	  <label>
 	    Favourite languages list:

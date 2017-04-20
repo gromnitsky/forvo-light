@@ -91,6 +91,10 @@ class PagePreferences extends Page {
 	for (let name of this._opts)
 	    this[name] = localStorage.getItem(`forvo-light-${name}`)
 	this.debug = conf.debug
+	if (this.apikey) {
+	    this.qc = new search.QueryCounter(this.apikey)
+	    this.qc.load()
+	}
     }
 
     post_render() {
@@ -180,6 +184,9 @@ class PageSearch extends Page {
 	    this.output('No API key')
 	    return
 	}
+	let qc = new search.QueryCounter(apikey)
+	qc.load()
+
 	if (!this.server_opt_set()) {
 	    this.output('Debug mode requires <i>Server options</i>')
 	    return
@@ -219,6 +226,7 @@ class PageSearch extends Page {
 		return
 	    }
 
+	    qc.inc()
 	    this.history.add(search.query_restore(query))
 	    this.url_update(query, lang)
 
@@ -265,6 +273,11 @@ class ForvoPronouncedWordsSearch extends Page {
 	}
 	this.opt = opt || {}
 	this.data = data
+
+	let apikey = localStorage.getItem('forvo-light-apikey')
+	this.qc = new search.QueryCounter(apikey)
+	this.qc.load()
+
 	this.items = this.transform()
     }
 
@@ -427,6 +440,7 @@ class ForvoPronouncedWordsSearch extends Page {
         audio.addEventListener('stalled', stalled)
 
 	audio.play()
+	this.qc.inc()
     }
 }
 
