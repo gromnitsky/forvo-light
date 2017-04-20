@@ -8,7 +8,6 @@ let firstBy = require('thenby')
 let meta = require('../package.json')
 let lang = require('./lang')
 let search = require('./search')
-let Android = require('./android')
 
 class NavService {
     constructor(selector) {
@@ -200,7 +199,7 @@ class PageSearch extends Page {
 	    return
 	}
 
-	if (!android.is_online()) {
+	if (!conf.is_online()) {
 	    this.output('The device is offline')
 	    return
 	}
@@ -358,7 +357,7 @@ class ForvoPronouncedWordsSearch extends Page {
     player(event, node) {
 	event.preventDefault()
 
-	if (!android.is_online()) {
+	if (!conf.is_online()) {
 	    alert('The device is offline')
 	    return
 	}
@@ -448,9 +447,14 @@ class ForvoPronouncedWordsSearch extends Page {
 /* Main */
 
 // app global options
+/* global Connection */
 let conf = new function() {
     let usp = new search.URLSearchParams(location.hash)
     this.debug = usp.get('debug')
+    this.is_online = function() {
+	if (!window.cordova) return true
+	return navigator.connection.type !== Connection.NONE
+    }
 }
 
 let log = console.log.bind(console)
@@ -481,7 +485,6 @@ let page_navigate = function() {
     }
 
     nav.update()
-    conf.page = page
     page.render()
 }
 
@@ -490,4 +493,11 @@ document.addEventListener('DOMContentLoaded', () => {
     page_navigate()
 })
 
-let android = new Android({ conf, PageSearch, log })
+if (window.cordova) {
+    document.addEventListener('deviceready', () => {
+	document.addEventListener('backbutton', (evt) => {
+            evt.preventDefault()
+            if (confirm('Exit?')) navigator.app.exitApp()
+	})
+    })
+}
