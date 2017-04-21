@@ -135,56 +135,77 @@ class QueryCounter {
 	this.db = {}
 	this.db_name = 'forvo-light-query-counter'
 	this.reset_hour = reset_hour
-	this.ranges_set(new Date())
+	this.load()
     }
 
+    deadline(localtime) {
+	localtime = localtime || new Date()
+	let midnight = Date.UTC(localtime.getUTCFullYear(),
+				localtime.getUTCMonth(), localtime.getUTCDate())
+	if (localtime.getUTCHours() >= this.reset_hour)
+	    midnight += 60*60*24*1000
+	return midnight + 60*60*this.reset_hour*1000
+    }
 
-    inc(localtime) {
-	if (!isnum(this.db[this.apikey])) this.db[this.apikey] = 0
-	this.db[this.apikey] = this.is_in_range(localtime) ? this.db[this.apikey] + 1 : 1
+    refresh(localtime, init_counter, fn) {
+	let prev = this.get()
+	let reset = () => {
+	    this.db[this.apikey] = {
+		counter: init_counter || 0,
+		deadline: this.deadline(localtime)
+	    }
+	}
+
+	if (!(prev && prev[this.apikey])) {
+	    reset()
+	    this.save()
+	    return
+	}
+
+	if (prev[this.apikey].deadline === this.deadline(localtime)) {
+	    if (fn) fn(prev[this.apikey].counter)
+	} else
+	    reset()
+
 	this.save()
     }
 
-    ranges_set(localtime) {
-	let today = Date.parse(`${localtime.getUTCFullYear()}-${pad(localtime.getUTCMonth()+1)}-${pad(localtime.getUTCDate())}`)
-	let yesterday = today - 60*60*24*1000
-	this.min = new Date(yesterday + 60*60*this.reset_hour*1000)
-	this.max = new Date(today + 60*60*this.reset_hour*1000)
+    inc(localtime) {
+	this.refresh(localtime, 1, (prev) => {
+	    this.db[this.apikey] = {
+		counter: prev + 1,
+		deadline: this.deadline(localtime)
+	    }
+	})
     }
 
-    fmt(d) {
+    deadline_pretty() {
+	let d = new Date(this.deadline())
 	return `${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
     }
 
-    min_pretty() {
-	return this.fmt(this.min)
-    }
-
-    max_pretty() {
-	return this.fmt(this.max)
-    }
-
-    is_in_range(localtime) {
-	localtime = localtime || Date.parse(new Date().toUTCString())
-	return this.min < localtime && localtime < this.max
-    }
-
     toString() {
-	return this.db[this.apikey] || 0
+	this.refresh()
+	return this.db[this.apikey].counter
     }
 
     save() {
 	localStorage.setItem(this.db_name, JSON.stringify(this.db))
     }
 
-    load() {
+    get() {
 	let json
 	try {
 	    json = JSON.parse(localStorage.getItem(this.db_name))
 	} catch (e) {
 	    return
 	}
-	if (ispobj(json)) this.db = json
+	return (ispobj(json)) ? json : null
+    }
+
+    load() {
+	let json = this.get()
+	if (json) this.db = json
     }
 }
 

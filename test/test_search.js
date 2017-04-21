@@ -112,52 +112,43 @@ suite('History', function() {
 })
 
 suite('QueryCounter', function() {
-    test('is_in_range', function() {
-	let qc = new search.QueryCounter('XXX')
-	let t = new Date('2000-10-10T00:00:00.000Z')
-	qc.ranges_set(t)
-
-	assert(qc.is_in_range(t))
-	assert(!qc.is_in_range(new Date('2000-10-09T22:00:00.000Z')))
-	assert(qc.is_in_range(new Date('2000-10-09T22:00:01.000Z')))
-	assert(!qc.is_in_range(new Date('2000-10-10T22:00:00.000Z')))
-	assert(qc.is_in_range(new Date('2000-10-10T21:59:59.000Z')))
+    setup(function() {
+	localStorage.clear()
     })
 
     test('inc', function() {
 	let qc = new search.QueryCounter('XXX')
 	let t = new Date('2000-10-10T00:00:00.000Z')
-	qc.ranges_set(t)
 
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	assert.equal(qc.db.XXX, 3)
+	qc.inc(t)
+	assert.deepEqual(qc.db, { 'XXX': { deadline: 971215200000, counter: 1 } })
 
-	qc.inc(new Date('2000-10-10T22:00:00.000Z'))
-	assert.equal(qc.db.XXX, 1)
+	qc.inc(t)
+	assert.deepEqual(qc.db, { 'XXX': { deadline: 971215200000, counter: 2 } })
+
+	qc.inc(new Date('2000-10-10T22:00:01.000Z'))
+	assert.deepEqual(qc.db, { 'XXX': { deadline: 971301600000, counter: 1 } })
     })
 
     test('save/load', function() {
 	let qc = new search.QueryCounter('XXX')
 	let t = new Date('2000-10-10T00:00:00.000Z')
-	qc.ranges_set(t)
-
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	assert.deepEqual(JSON.parse(localStorage.getItem(qc.db_name)), {'XXX': 3})
+	qc.inc(t)
+	qc.inc(t)
+	qc.inc(t)
+	assert.deepEqual(JSON.parse(localStorage.getItem(qc.db_name)),
+			 {'XXX': {counter: 3, deadline: 971215200000}})
 
 	// don't load invalid values
 	localStorage.setItem(qc.db_name, '[]')
 	qc.load()
-	assert.deepEqual(qc.db, {'XXX': 3})
+	assert.deepEqual(qc.db, {'XXX': {counter: 3, deadline: 971215200000}})
 
 	localStorage.setItem(qc.db_name, '{"foo": 1}')
 	qc.load()
 	assert.deepEqual(qc.db, {"foo": 1})
 
-	qc.inc(new Date('2000-10-09T22:00:01.000Z'))
-	assert.equal(qc.db.XXX, 1)
+	qc.inc(new Date('2000-10-10T22:00:01.000Z'))
+	assert.deepEqual(qc.db.XXX, { counter: 1, deadline: 971301600000 })
     })
 })

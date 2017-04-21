@@ -49,8 +49,8 @@
 	</p>
 	{{ #qc }}
 	<p>
-	  Requests counter (local time): <br>
-	  {{ qc.min_pretty }} &lt; {{ qc }} &lt; {{ qc.max_pretty }}
+	  Requests counter (local time):<br>
+	  {{ qc }} &lt; {{ qc.deadline_pretty }}
 	</p>
 	{{ /qc }}
 
