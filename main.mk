@@ -12,6 +12,13 @@ export NODE_PATH := $(realpath node_modules)
 mkdir = @mkdir -p $(dir $@)
 copy = cp $< $@
 
+define compile-push
+compile: $(1)
+compile.all += $(1)
+endef
+
+prog.ver := $(shell json < $(mk)/package.json version)
+
 
 
 node_modules: package.json
@@ -39,8 +46,7 @@ $(vendor.dest): $(out)/src/%: $(mk)/%
 	$(mkdir)
 	$(copy)
 
-compile: $(assets.dest) $(vendor.dest)
-compile.all += $(assets.dest) $(vendor.dest)
+$(eval $(call compile-push, $(assets.dest) $(vendor.dest)))
 
 
 
@@ -53,8 +59,7 @@ $(js.dest): $(js.ccache)/%.js: $(mk)/src/%.js
 	babel $< -o $@ --presets $(npm.root)/babel-preset-es2015 -s inline
 
 $(js.dest): node_modules
-compile: $(js.dest)
-compile.all += $(js.dest)
+$(eval $(call compile-push, $(js.dest)))
 
 json.src := $(filter %.json, $(src.files))
 json.dest := $(patsubst $(mk)/src/%.json, $(js.ccache)/%.json, $(json.src))
@@ -63,8 +68,7 @@ $(json.dest): $(js.ccache)/%.json: $(mk)/src/%.json
 	$(mkdir)
 	$(copy)
 
-compile: $(json.dest)
-compile.all += $(json.dest)
+$(eval $(call compile-push, $(json.dest)))
 
 
 
@@ -73,8 +77,7 @@ $(out)/src/main.browserify.js: $(js.ccache)/main.js
 	browserify -d $< -o $@
 
 $(out)/src/main.browserify.js: $(js.dest)
-compile: $(out)/src/main.browserify.js
-compile.all += $(out)/src/main.browserify.js
+$(eval $(call compile-push, $(out)/src/main.browserify.js))
 
 
 
@@ -119,3 +122,17 @@ cordova: $(cordova.dest)/.target.build
 cordova-install: $(cordova.dest)/.target.build
 	-adb uninstall gromnitsky.forvolight
 	adb install $(cordova.dest)/platforms/android/ant-build/MainActivity-debug.apk
+
+
+
+
+.PHONY: upload-web
+upload-web: $(compile.all)
+	rsync -avPL --delete -e ssh $(out)/src/ gromnitsky@web.sourceforge.net:/home/user-web/gromnitsky/htdocs/js/forvo-light
+
+.PHONY: upload-apk
+upload-apk: $(cordova.dest)/.target.build
+	rsync -avPL -e ssh $(cordova.dest)/platforms/android/ant-build/MainActivity-debug.apk gromnitsky@web.sourceforge.net:/home/user-web/gromnitsky/htdocs/android/apk/forvo-light-$(prog.ver)-debug.apk
+
+.PHONY: upload
+upload: upload-web upload-apk
