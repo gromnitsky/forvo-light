@@ -1,6 +1,9 @@
 # forvo-light
 
-A lightweight web-client to forvo.com.
+A lightweight web/android client to forvo.com.
+
+A precompiled apk: http://gromnitsky.users.sourceforge.net/android/apk/ <br>
+A live example (see *Usage* section below): http://gromnitsky.users.sourceforge.net/js/forvo-light/
 
 <img src='http://ultraimg.com/images/2017/04/18/0xrM.png'>
 
