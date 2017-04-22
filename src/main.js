@@ -426,7 +426,8 @@ class ForvoPronouncedWordsSearch extends Page {
         }
         let stalled = (evt) => {
 	    log('player stalled', evt)
-	    node.innerHTML = 'B'
+	    // spinner
+	    node.innerHTML = '<i class="fa fa-crosshairs fa-spin fa-fw fa-2x"></i>'
         }
 
 	audio.addEventListener('loadstart', loadstart)
