@@ -84,8 +84,8 @@ let server = http.createServer(function(req, res) {
 	file = 'cat.json'
 	break
     case 'popular-pronounced-words':
-	errx(res, 501, 'TODO')
-	return
+	file = 'top100.json'
+	break
     default:
 	file = 'cat-search.json'
     }

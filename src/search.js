@@ -65,7 +65,7 @@ exports.req_url = function(apikey, query, lang_code) {
 	url += `/word-pronunciations/word/${encodeURIComponent(query.q)}`
 	break
     case '.top':
-	url += '/popular-pronounced-words/limit/20'
+	url += '/popular-pronounced-words/limit/100'
 	break
     default:
 	if (!query.q) return null

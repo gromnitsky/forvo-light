@@ -72,6 +72,8 @@
   width: 100%;
 }
 
+/* History */
+
 #history ul {
   padding: 0;
   list-style-type: none;
@@ -91,7 +93,7 @@
   color: #005bbb;
 }
 
-/* Widgets */
+/* pronounced-words-search */
 
 #forvo_pronounced-words-search__table {
   width: 100%;
@@ -105,4 +107,31 @@
 #forvo_pronounced-words-search__table tr:nth-child(4n+2),
 #forvo_pronounced-words-search__table tr:nth-child(4n+4) {
   border-bottom: 1px solid lightgray;
+}
+
+/* popular_pronounced_words */
+
+#forvo_popular_pronounced_words__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#forvo_popular_pronounced_words__table th {
+  text-align: left;
+}
+
+#forvo_popular_pronounced_words__table td {
+  border-top: 1px solid lightgray;
+}
+
+#forvo_popular_pronounced_words__table td a {
+  display: block;
+  padding: 0.4em 0;
+  font-size: large;
+  text-decoration: none;
+}
+
+#forvo_popular_pronounced_words__table td a:hover {
+  background-color: #ffd500;
+  color: #005bbb;
 }

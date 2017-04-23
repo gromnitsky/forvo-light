@@ -241,8 +241,8 @@ class PageSearch extends Page {
 							data, { langlist })
 		break
 	    case '.top':
-		this.output('TODO')
-		return
+		widget = new ForvoPopularPronouncedWords('#search__output', data)
+		break
 	    default:
 		// pronounced-words-search
 		widget = new ForvoPronouncedWordsSearch('#search__output',
@@ -445,6 +445,27 @@ class ForvoPronouncedWordsSearch extends Page {
 
 	audio.play()
 	this.qc.inc()
+    }
+}
+
+class ForvoPopularPronouncedWords extends Page {
+    constructor(container, data) {
+	super(container, '#tmpl_forvo_popular_pronounced_words')
+	if (!data || !data.items || !data.items.length) {
+	    this.error = new Error('No popular words this time')
+	    return
+	}
+	this.items = this.transform(data)
+    }
+
+    transform(data) {
+	return data.items.map( val => {
+	    return {
+		original: val.original,
+		link: this.hyperlink({'q': `. ${val.original}`}),
+		num_pronunciations: val.num_pronunciations
+	    }
+	})
     }
 }
 

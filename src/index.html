@@ -136,6 +136,25 @@
       <p style="color: green; text-align: right;">Pronunciations by Forvo</p>
     </script>
 
+    <script type="text/mustache" id="tmpl_forvo_popular_pronounced_words">
+      <table id="forvo_popular_pronounced_words__table">
+	<thead>
+	  <tr>
+	    <th><i class="fa fa-globe"></i></th>
+	    <th><i class="fa fa-music"></i></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {{ #items }}
+	  <tr>
+	    <td><a href="{{ link }}">{{ original }}</a></td>
+	    <td>{{ num_pronunciations }}</td>
+	  </tr>
+	  {{ /items }}
+	</tbody>
+      </table>
+    </script>
+
   </head>
 
   <body>

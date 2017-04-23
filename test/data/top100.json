@@ -1,0 +1,601 @@
+{
+  "attributes": {
+    "total": 99
+  },
+  "items": [
+    {
+      "id": 1151,
+      "word": "apple",
+      "original": "Apple",
+      "num_pronunciations": "12"
+    },
+    {
+      "id": 21243,
+      "word": "april",
+      "original": "April",
+      "num_pronunciations": "48"
+    },
+    {
+      "id": 908,
+      "word": "argentina",
+      "original": "Argentina",
+      "num_pronunciations": "54"
+    },
+    {
+      "id": 4310,
+      "word": "australia",
+      "original": "Australia",
+      "num_pronunciations": "54"
+    },
+    {
+      "id": 1304,
+      "word": "brasil",
+      "original": "Brasil",
+      "num_pronunciations": "50"
+    },
+    {
+      "id": 4840,
+      "word": "canada",
+      "original": "Canada",
+      "num_pronunciations": "39"
+    },
+    {
+      "id": 1846,
+      "word": "florida",
+      "original": "Florida",
+      "num_pronunciations": "31"
+    },
+    {
+      "id": 325696,
+      "word": "france",
+      "original": "France",
+      "num_pronunciations": "28"
+    },
+    {
+      "id": 2646,
+      "word": "friedrich_nietzsche",
+      "original": "Friedrich Nietzsche",
+      "num_pronunciations": "14"
+    },
+    {
+      "id": 32247,
+      "word": "germany",
+      "original": "Germany",
+      "num_pronunciations": "25"
+    },
+    {
+      "id": 325338,
+      "word": "ireland",
+      "original": "Ireland",
+      "num_pronunciations": "26"
+    },
+    {
+      "id": 282532,
+      "word": "monsieur",
+      "original": "Monsieur",
+      "num_pronunciations": "17"
+    },
+    {
+      "id": 746,
+      "word": "méxico",
+      "original": "México",
+      "num_pronunciations": "43"
+    },
+    {
+      "id": 1842,
+      "word": "portugal",
+      "original": "Portugal",
+      "num_pronunciations": "67"
+    },
+    {
+      "id": 3584,
+      "word": "rio_de_janeiro",
+      "original": "Rio de Janeiro",
+      "num_pronunciations": "47"
+    },
+    {
+      "id": 979150,
+      "word": "tokyo",
+      "original": "Tokyo",
+      "num_pronunciations": "22"
+    },
+    {
+      "id": 17108,
+      "word": "tumblr",
+      "original": "Tumblr",
+      "num_pronunciations": "41"
+    },
+    {
+      "id": 4545,
+      "word": "washington",
+      "original": "Washington",
+      "num_pronunciations": "33"
+    },
+    {
+      "id": 491,
+      "word": "word",
+      "original": "Word",
+      "num_pronunciations": "39"
+    },
+    {
+      "id": 12188,
+      "word": "a",
+      "original": "a",
+      "num_pronunciations": "123"
+    },
+    {
+      "id": 287704,
+      "word": "accurate",
+      "original": "accurate",
+      "num_pronunciations": "11"
+    },
+    {
+      "id": 3552,
+      "word": "amor",
+      "original": "amor",
+      "num_pronunciations": "65"
+    },
+    {
+      "id": 3552,
+      "word": "amor",
+      "original": "amor",
+      "num_pronunciations": "65"
+    },
+    {
+      "id": 74437,
+      "word": "antidisestablishmentarianism",
+      "original": "antidisestablishmentarianism",
+      "num_pronunciations": "65"
+    },
+    {
+      "id": 283881,
+      "word": "anything",
+      "original": "anything",
+      "num_pronunciations": "35"
+    },
+    {
+      "id": 234605,
+      "word": "are",
+      "original": "are",
+      "num_pronunciations": "18"
+    },
+    {
+      "id": 320381,
+      "word": "arigato　(ありがとう)",
+      "original": "arigato　(ありがとう)",
+      "num_pronunciations": "33"
+    },
+    {
+      "id": 213298,
+      "word": "aunt",
+      "original": "aunt",
+      "num_pronunciations": "38"
+    },
+    {
+      "id": 5293,
+      "word": "awesome",
+      "original": "awesome",
+      "num_pronunciations": "37"
+    },
+    {
+      "id": 1838,
+      "word": "banana",
+      "original": "banana",
+      "num_pronunciations": "62"
+    },
+    {
+      "id": 74936,
+      "word": "bear",
+      "original": "bear",
+      "num_pronunciations": "14"
+    },
+    {
+      "id": 6104,
+      "word": "bed",
+      "original": "bed",
+      "num_pronunciations": "20"
+    },
+    {
+      "id": 392522,
+      "word": "blood",
+      "original": "blood",
+      "num_pronunciations": "12"
+    },
+    {
+      "id": 1526,
+      "word": "bonjour",
+      "original": "bonjour",
+      "num_pronunciations": "42"
+    },
+    {
+      "id": 3976,
+      "word": "book",
+      "original": "book",
+      "num_pronunciations": "40"
+    },
+    {
+      "id": 854,
+      "word": "brother",
+      "original": "brother",
+      "num_pronunciations": "14"
+    },
+    {
+      "id": 6168,
+      "word": "caballo",
+      "original": "caballo",
+      "num_pronunciations": "24"
+    },
+    {
+      "id": 415344,
+      "word": "camera",
+      "original": "camera",
+      "num_pronunciations": "21"
+    },
+    {
+      "id": 1368,
+      "word": "car",
+      "original": "car",
+      "num_pronunciations": "40"
+    },
+    {
+      "id": 2804,
+      "word": "caramel",
+      "original": "caramel",
+      "num_pronunciations": "44"
+    },
+    {
+      "id": 329246,
+      "word": "caught",
+      "original": "caught",
+      "num_pronunciations": "30"
+    },
+    {
+      "id": 1422,
+      "word": "chorizo",
+      "original": "chorizo",
+      "num_pronunciations": "35"
+    },
+    {
+      "id": 1567,
+      "word": "croissant",
+      "original": "croissant",
+      "num_pronunciations": "23"
+    },
+    {
+      "id": 283177,
+      "word": "dance",
+      "original": "dance",
+      "num_pronunciations": "35"
+    },
+    {
+      "id": 1723,
+      "word": "data",
+      "original": "data",
+      "num_pronunciations": "53"
+    },
+    {
+      "id": 337120,
+      "word": "debut",
+      "original": "debut",
+      "num_pronunciations": "20"
+    },
+    {
+      "id": 69496,
+      "word": "dessert",
+      "original": "dessert",
+      "num_pronunciations": "23"
+    },
+    {
+      "id": 3049,
+      "word": "do",
+      "original": "do",
+      "num_pronunciations": "50"
+    },
+    {
+      "id": 1720,
+      "word": "dog",
+      "original": "dog",
+      "num_pronunciations": "41"
+    },
+    {
+      "id": 805,
+      "word": "esternocleidomastoideo",
+      "original": "esternocleidomastoideo",
+      "num_pronunciations": "39"
+    },
+    {
+      "id": 5797,
+      "word": "fire",
+      "original": "fire",
+      "num_pronunciations": "21"
+    },
+    {
+      "id": 6018,
+      "word": "fish",
+      "original": "fish",
+      "num_pronunciations": "16"
+    },
+    {
+      "id": 12300,
+      "word": "garage",
+      "original": "garage",
+      "num_pronunciations": "55"
+    },
+    {
+      "id": 19702,
+      "word": "glass",
+      "original": "glass",
+      "num_pronunciations": "23"
+    },
+    {
+      "id": 337630,
+      "word": "go",
+      "original": "go",
+      "num_pronunciations": "23"
+    },
+    {
+      "id": 1053,
+      "word": "good",
+      "original": "good",
+      "num_pronunciations": "16"
+    },
+    {
+      "id": 1105,
+      "word": "gracias",
+      "original": "gracias",
+      "num_pronunciations": "45"
+    },
+    {
+      "id": 5864,
+      "word": "hand",
+      "original": "hand",
+      "num_pronunciations": "27"
+    },
+    {
+      "id": 1764684,
+      "word": "hello",
+      "original": "hello",
+      "num_pronunciations": "72"
+    },
+    {
+      "id": 282699,
+      "word": "hola",
+      "original": "hola",
+      "num_pronunciations": "56"
+    },
+    {
+      "id": 21940,
+      "word": "i",
+      "original": "i",
+      "num_pronunciations": "78"
+    },
+    {
+      "id": 20933,
+      "word": "in",
+      "original": "in",
+      "num_pronunciations": "44"
+    },
+    {
+      "id": 4105,
+      "word": "island",
+      "original": "island",
+      "num_pronunciations": "29"
+    },
+    {
+      "id": 9417,
+      "word": "literature",
+      "original": "literature",
+      "num_pronunciations": "30"
+    },
+    {
+      "id": 16593,
+      "word": "man",
+      "original": "man",
+      "num_pronunciations": "41"
+    },
+    {
+      "id": 319623,
+      "word": "mirror",
+      "original": "mirror",
+      "num_pronunciations": "17"
+    },
+    {
+      "id": 720,
+      "word": "mobile",
+      "original": "mobile",
+      "num_pronunciations": "21"
+    },
+    {
+      "id": 3848,
+      "word": "mother",
+      "original": "mother",
+      "num_pronunciations": "16"
+    },
+    {
+      "id": 5488,
+      "word": "no",
+      "original": "no",
+      "num_pronunciations": "51"
+    },
+    {
+      "id": 1520,
+      "word": "nuclear",
+      "original": "nuclear",
+      "num_pronunciations": "33"
+    },
+    {
+      "id": 9852,
+      "word": "não",
+      "original": "não",
+      "num_pronunciations": "24"
+    },
+    {
+      "id": 1176,
+      "word": "one",
+      "original": "one",
+      "num_pronunciations": "30"
+    },
+    {
+      "id": 7031,
+      "word": "orange",
+      "original": "orange",
+      "num_pronunciations": "43"
+    },
+    {
+      "id": 153,
+      "word": "paella",
+      "original": "paella",
+      "num_pronunciations": "51"
+    },
+    {
+      "id": 74997,
+      "word": "pin",
+      "original": "pin",
+      "num_pronunciations": "24"
+    },
+    {
+      "id": 5356,
+      "word": "pronunciation",
+      "original": "pronunciation",
+      "num_pronunciations": "36"
+    },
+    {
+      "id": 1788,
+      "word": "roof",
+      "original": "roof",
+      "num_pronunciations": "27"
+    },
+    {
+      "id": 118969,
+      "word": "rut",
+      "original": "rut",
+      "num_pronunciations": "18"
+    },
+    {
+      "id": 123,
+      "word": "saudade",
+      "original": "saudade",
+      "num_pronunciations": "52"
+    },
+    {
+      "id": 987330,
+      "word": "schedule",
+      "original": "schedule",
+      "num_pronunciations": "36"
+    },
+    {
+      "id": 31627,
+      "word": "squirrel",
+      "original": "squirrel",
+      "num_pronunciations": "36"
+    },
+    {
+      "id": 17853,
+      "word": "stupid",
+      "original": "stupid",
+      "num_pronunciations": "21"
+    },
+    {
+      "id": 6050,
+      "word": "talk",
+      "original": "talk",
+      "num_pronunciations": "18"
+    },
+    {
+      "id": 6357,
+      "word": "te_quiero",
+      "original": "te quiero",
+      "num_pronunciations": "32"
+    },
+    {
+      "id": 284785,
+      "word": "thank_you",
+      "original": "thank you",
+      "num_pronunciations": "38"
+    },
+    {
+      "id": 282289,
+      "word": "this",
+      "original": "this",
+      "num_pronunciations": "13"
+    },
+    {
+      "id": 1178,
+      "word": "three",
+      "original": "three",
+      "num_pronunciations": "35"
+    },
+    {
+      "id": 14525,
+      "word": "tomato",
+      "original": "tomato",
+      "num_pronunciations": "56"
+    },
+    {
+      "id": 8646,
+      "word": "tu",
+      "original": "tu",
+      "num_pronunciations": "51"
+    },
+    {
+      "id": 14731,
+      "word": "walk",
+      "original": "walk",
+      "num_pronunciations": "32"
+    },
+    {
+      "id": 3884,
+      "word": "water",
+      "original": "water",
+      "num_pronunciations": "112"
+    },
+    {
+      "id": 597,
+      "word": "world",
+      "original": "world",
+      "num_pronunciations": "32"
+    },
+    {
+      "id": 1203506,
+      "word": "yes",
+      "original": "yes",
+      "num_pronunciations": "17"
+    },
+    {
+      "id": 293289,
+      "word": "привет",
+      "original": "привет",
+      "num_pronunciations": "54"
+    },
+    {
+      "id": 283597,
+      "word": "спасибо",
+      "original": "спасибо",
+      "num_pronunciations": "36"
+    },
+    {
+      "id": 650,
+      "word": "你好",
+      "original": "你好",
+      "num_pronunciations": "81"
+    },
+    {
+      "id": 42337,
+      "word": "再見",
+      "original": "再見",
+      "num_pronunciations": "28"
+    },
+    {
+      "id": 29517,
+      "word": "我愛你",
+      "original": "我愛你",
+      "num_pronunciations": "42"
+    },
+    {
+      "id": 279703,
+      "word": "驢",
+      "original": "驢",
+      "num_pronunciations": "17"
+    }
+  ]
+}
