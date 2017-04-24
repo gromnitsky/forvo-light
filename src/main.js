@@ -41,15 +41,11 @@ class Page {
 	return nodes.length === 1 ? nodes[0] : nodes
     }
 
-    attach(selector, event, fn) {
-	let node = this.$(selector)
-	if (node instanceof NodeList) {
-	    for (let idx = 0; idx < node.length; ++idx) {
-		let el = node[idx]
-		el.addEventListener(event, (evt) => fn.call(this, evt, el))
-	    }
-	} else {
-	    node.addEventListener(event, (evt) => fn.call(this, evt, node))
+    attach(selector, event_name, fn) {
+	let nodes = this.container.querySelectorAll(selector)
+	for (let idx = 0; idx < nodes.length; ++idx) {
+	    let el = nodes[idx]
+	    el.addEventListener(event_name, (evt) => fn.call(this, evt, el))
 	}
     }
 
