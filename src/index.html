@@ -82,14 +82,59 @@
 
     <script type="text/mustache" id="tmpl_about">
       <p>
-	{{ meta.name }} {{ meta.version }}.<br>
-	{{ meta.description }}.
+	{{ meta.name }} {{ meta.version }} - {{ meta.description }}.
       </p>
+
+      <h3>Available queries</h3>
+
+      <table>
+	<thead>
+	  <tr>
+	    <th>Example</th>
+	    <th>Description</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td><code>word</code></td>
+	    <td>
+	      <i>Pronounced words search:</i> get words starting w/
+	      a pattern w/ 1 or more pronunciations.
+	    </td>
+	  </tr>
+
+	  <tr>
+	    <td><code>. word</code></td>
+	    <td>
+	      <i>Word pronunciations:</i> get all the pronunciations
+	      for a word.
+	    </td>
+	  </tr>
+
+	  <tr>
+	    <td><code>.top</code></td>
+	    <td>
+	      <i>Popular pronounced words:</i> get 100 most popular
+	      words w/ at least 1 pronunciation.
+	    </td>
+	  </tr>
+	</tbody>
+      </table>
 
       <p>
-	Works as a regular web or an Android 2.3+ app.
+	All queries can filtered by language.
       </p>
 
+      <h3>API requests counter</h3>
+      <p>
+	After entering an api key in the Preferences panel, the app
+	will display a counter for the api key. For example, <code>135
+	&lt; 04/25 01:00</code> means you've hit the api endpoint 135
+	times during Apr 24 1am - Apr 25 1am. The time window is
+	displayed in your local time zone.
+      </p>
+
+      <h3>Meta</h3>
       <p>
 	The latest apk & the app source code: <a class="external" href="{{ meta.homepage }}">{{ meta.homepage }}</a>
       </p>

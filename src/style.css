@@ -93,6 +93,23 @@
   color: #005bbb;
 }
 
+/* About */
+
+#about table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#about th,
+#about td {
+  padding: 4px;
+  border: 1px solid lightgrey;
+}
+
+#about code {
+  background-color: #e6e6e6;
+}
+
 /* pronounced-words-search */
 
 #forvo_pronounced-words-search__table {
