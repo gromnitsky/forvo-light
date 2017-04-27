@@ -66,6 +66,28 @@
   width: 100%;
 }
 
+.pagination {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  padding: 0;
+}
+
+.pagination a {
+  display: table-cell;
+  text-align: center;
+  text-decoration: none;
+  padding: 5px 0;
+  border: 1px solid gray;
+}
+
+.pagination a:hover {
+  background-color: #ffd500;
+  color: #005bbb;
+}
+
+
 /* Preferences */
 
 #preferences input {

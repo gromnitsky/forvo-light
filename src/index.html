@@ -178,6 +178,13 @@
 	</tbody>
       </table>
 
+      {{ #pagination }}
+      <p class="pagination">
+	{{ #pp }} <a href="{{ pp }}"><i class="fa fa-hand-o-left"></i></a> {{ /pp }}
+	{{ #pn }} <a href="{{ pn }}"><i class="fa fa-hand-o-right"></i></a> {{ /pn }}
+      </p>
+      {{ /pagination }}
+
       <p style="color: green; text-align: right;">Pronunciations by Forvo</p>
     </script>
 

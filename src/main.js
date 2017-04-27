@@ -242,7 +242,8 @@ class PageSearch extends Page {
 	    default:
 		// pronounced-words-search
 		widget = new ForvoPronouncedWordsSearch('#search__output',
-							data, { langlist })
+							data,
+							{ langlist, query })
 	    }
 	    widget.render()
 	})
@@ -278,6 +279,20 @@ class ForvoPronouncedWordsSearch extends Page {
 	this.qc = new search.QueryCounter(apikey)
 
 	this.items = this.transform()
+    }
+
+    pagination() {
+	let attrs = this.data.attributes || {}
+	if (!attrs.total_pages || attrs.total_pages === 1) return null
+	if (!this.opt.query) return
+
+	let r = {}
+	if (attrs.page !== 1)
+	    r.pp = this.hyperlink({q: `${this.opt.query.q} .${attrs.page - 1}`})
+	if (attrs.page < attrs.total_pages)
+	    r.pn = this.hyperlink({q: `${this.opt.query.q} .${attrs.page + 1}`})
+
+	return r
     }
 
     lang_parse() {
