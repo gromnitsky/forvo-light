@@ -17,21 +17,33 @@ let ispobj = function(o) {
 }
 
 exports.query_parse = function(str = '') {
-    str = str.trim()
-    if (str.length === 0) return { type: '.pws', q: '' }
+    let first_pass = (str) => {
+	str = str.trim()
+	if (str.length === 0) return { type: '.pws', q: '' }
 
-    let parts = str.split(/\s+/)
-    if (parts[0][0] !== '.') return { type: '.pws', q: parts.join(' ') }
+	let parts = str.split(/\s+/)
+	if (parts[0][0] !== '.') return { type: '.pws', q: parts.join(' ') }
 
-    let cmd = {
-	'.pws': '.pws',		// pronounced-words-search
-	'.wp': '.wp',		// word-pronunciations
-	'.': '.wp',		// an alias for word-pronunciations
-	'.top': '.top'
+	let cmd = {
+	    '.pws': '.pws',		// pronounced-words-search
+	    '.wp': '.wp',		// word-pronunciations
+	    '.': '.wp',		// an alias for word-pronunciations
+	    '.top': '.top'
+	}
+	let type = cmd[parts[0]]
+	if (!type) type = '.pws'
+	return {type, q: parts.slice(1).join(' ') }
     }
-    let type = cmd[parts[0]]
-    if (!type) type = '.pws'
-    return {type, q: parts.slice(1).join(' ') }
+
+    let r = first_pass(str)
+    let re = /(^|\s)\.\d+(?!\S)/g
+    let p = r.q.match(re)
+    // the last p overrides all others
+    if (p) {
+	r.p = parseInt(p[p.length - 1].match(/\d+/)[0]) || 1
+	r.q = r.q.replace(re, ' ').trim()
+    }
+    return r
 }
 
 exports.query_restore = function(query) {
@@ -43,7 +55,8 @@ exports.query_restore = function(query) {
     }
     if (!(query.type in type))
 	throw new Error(`invalid query type: ${query.type}`)
-    return (type[query.type] + ' ' + query.q).trim()
+    return (type[query.type] + ' ' + query.q
+	    + (query.p ? ` .${query.p}` : '')).trim()
 }
 
 exports.forvo = {
@@ -70,6 +83,7 @@ exports.req_url = function(apikey, query, lang_code) {
     default:
 	if (!query.q) return null
 	url += `/pronounced-words-search/search/${encodeURIComponent(query.q)}`
+	if (query.p) url += `/page/${query.p}`
     }
 
     if (lang_code && lang_code !== '-') url += `/language/${lang_code}`

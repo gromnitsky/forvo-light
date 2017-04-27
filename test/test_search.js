@@ -37,6 +37,11 @@ suite('misc', function() {
 			 { type: '.pws', q: 'hello world' })
 	assert.deepEqual(search.query_parse('.an-unknown-type'),
 			 { type: '.pws', q: '' })
+
+	// pages
+	assert.deepEqual(search.query_parse('hello world .2 .0'),
+			 { type: '.pws', q: 'hello world', p: 1 })
+
     })
 
     test('query_restore', function() {
@@ -46,6 +51,10 @@ suite('misc', function() {
 	assert.equal(search.query_restore({type: '.top', q: ''}), ".top")
 	assert.equal(search.query_restore({type: '.pws', q: 'hello'}), "hello")
 	assert.equal(search.query_restore({type: '.pws', q: ''}), "")
+
+	// pages
+	assert.equal(search.query_restore({type: '.pws', q: 'hello', p: 1}), "hello .1")
+
     })
 
     test('req_url', function() {
@@ -68,6 +77,10 @@ suite('misc', function() {
 	assert.equal(search.req_url('XXX', search.query_parse('. cat shark'),
 				    '-'),
 		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark')
+
+	// pages
+	assert.equal(search.req_url('XXX', search.query_parse('avaux .2 .1')),
+		     'https://apifree.forvo.com/key/XXX/format/json/action/pronounced-words-search/search/avaux/page/1')
     })
 })
 
