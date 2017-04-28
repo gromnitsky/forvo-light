@@ -162,7 +162,7 @@ class PageSearch extends Page {
     }
 
     server_opt_set(sq) {
-	if (!conf.debug) return true
+	if (!conf.debug()) return true
 
 	let opt = localStorage.getItem('forvo-light-server')
 	if (!opt) return false
@@ -485,10 +485,9 @@ class ForvoPopularPronouncedWords extends Page {
 
 // app global options
 /* global Connection */
-let conf = new function() {
-    let usp = new search.URLSearchParams(location.hash)
-    this.debug = usp.get('debug')
-    this.is_online = function() {
+let conf = {
+    debug: () => new search.URLSearchParams(location.hash).get('debug'),
+    is_online: () => {
 	if (!window.cordova) return true
 	return navigator.connection.type !== Connection.NONE
     }
