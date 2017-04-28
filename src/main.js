@@ -38,6 +38,7 @@ class Page {
 
     $(str) {
 	let nodes = this.container.querySelectorAll(str)
+	if (!nodes.length) return null
 	return nodes.length === 1 ? nodes[0] : nodes
     }
 
