@@ -4,10 +4,6 @@ let URLSearchParams = require('url-search-params')
 
 let lang = require('./lang')
 
-let isnum = function(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
 let pad = function(str) {
     return ('0'+str).slice(-2)
 }
@@ -16,78 +12,90 @@ let ispobj = function(o) {
     return (o === Object(o)) && !(o instanceof Array)
 }
 
-exports.query_parse = function(str = '') {
-    let first_pass = (str) => {
-	str = str.trim()
-	if (str.length === 0) return { type: '.pws', q: '' }
+exports.Query = class {
+    constructor(orig = '', opt = {}) {
+	this.orig = orig
+	this.opt = opt
+	this.opt.endpoint = this.opt.endpoint || {
+	    protocol: 'https',
+	    host: 'apifree.forvo.com',
+	    port: 80
+	}
+	this.query = this.parse()
+    }
 
-	let parts = str.split(/\s+/)
-	if (parts[0][0] !== '.') return { type: '.pws', q: parts.join(' ') }
+    parse() {
+	let first_pass = (str) => {
+	    str = str.trim()
+	    if (str.length === 0) return { type: '.pws', q: '' }
 
-	let cmd = {
-	    '.pws': '.pws',		// pronounced-words-search
-	    '.wp': '.wp',		// word-pronunciations
-	    '.': '.wp',		// an alias for word-pronunciations
+	    let parts = str.split(/\s+/)
+	    if (parts[0][0] !== '.') return { type: '.pws', q: parts.join(' ') }
+
+	    let cmd = {
+		'.pws': '.pws',		// pronounced-words-search
+		'.wp': '.wp',		// word-pronunciations
+		'.': '.wp',		// an alias for word-pronunciations
+		'.top': '.top'
+	    }
+	    let type = cmd[parts[0]]
+	    if (!type) type = '.pws'
+	    return {type, q: parts.slice(1).join(' ') }
+	}
+
+	let r = first_pass(this.orig)
+	let re = /(^|\s)\.\d+(?!\S)/g
+	let p = r.q.match(re)
+	// the last p overrides all others
+	if (p) {
+	    r.p = parseInt(p[p.length - 1].match(/\d+/)[0]) || 1
+	    r.q = r.q.replace(re, ' ').trim()
+	}
+	return r
+    }
+
+    restore(_query) {
+	let query = _query || this.query
+	if (!query) return ""
+	let type = {
+	    '.pws': '',
+	    '.wp': '.',
 	    '.top': '.top'
 	}
-	let type = cmd[parts[0]]
-	if (!type) type = '.pws'
-	return {type, q: parts.slice(1).join(' ') }
+	if (!(query.type in type))
+	    throw new Error(`invalid query type: ${query.type}`)
+	return (type[query.type] + ' ' + query.q
+		+ (query.p ? ` .${query.p}` : '')).trim()
     }
 
-    let r = first_pass(str)
-    let re = /(^|\s)\.\d+(?!\S)/g
-    let p = r.q.match(re)
-    // the last p overrides all others
-    if (p) {
-	r.p = parseInt(p[p.length - 1].match(/\d+/)[0]) || 1
-	r.q = r.q.replace(re, ' ').trim()
+    req_url() {
+	if (!this.opt.apikey) return
+	let query = this.parse()
+
+	let lang_code = this.opt.lang_code
+	if (lang_code && lang_code !== '-' && !lang.is_valid(lang_code))
+	    return null
+
+	let req = this.opt.endpoint
+	let url = `${req.protocol}://${req.host}${req.port === 80 ? "" : ":" + req.port}/key/${this.opt.apikey}/format/json/action`
+
+	switch (query.type) {
+	case '.wp':
+	    if (!query.q) return null
+	    url += `/word-pronunciations/word/${encodeURIComponent(query.q)}`
+	    break
+	case '.top':
+	    url += '/popular-pronounced-words/limit/100'
+	    break
+	default:
+	    if (!query.q) return null
+	    url += `/pronounced-words-search/search/${encodeURIComponent(query.q)}`
+	    if (query.p) url += `/page/${query.p}`
+	}
+
+	if (lang_code && lang_code !== '-') url += `/language/${lang_code}`
+	return url
     }
-    return r
-}
-
-exports.query_restore = function(query) {
-    if (!query) return ""
-    let type = {
-	'.pws': '',
-	'.wp': '.',
-	'.top': '.top'
-    }
-    if (!(query.type in type))
-	throw new Error(`invalid query type: ${query.type}`)
-    return (type[query.type] + ' ' + query.q
-	    + (query.p ? ` .${query.p}` : '')).trim()
-}
-
-exports.forvo = {
-    protocol: 'https',
-    host: 'apifree.forvo.com',
-    port: 80
-}
-
-// query -- a result from query_parse()
-exports.req_url = function(apikey, query, lang_code) {
-    if (!query || !apikey) return null
-    if (lang_code && lang_code !== '-' && !lang.is_valid(lang_code)) return null
-
-    let url = `${exports.forvo.protocol}://${exports.forvo.host}${exports.forvo.port === 80 ? "" : ":"+exports.forvo.port}/key/${apikey}/format/json/action`
-
-    switch (query.type) {
-    case '.wp':
-	if (!query.q) return null
-	url += `/word-pronunciations/word/${encodeURIComponent(query.q)}`
-	break
-    case '.top':
-	url += '/popular-pronounced-words/limit/100'
-	break
-    default:
-	if (!query.q) return null
-	url += `/pronounced-words-search/search/${encodeURIComponent(query.q)}`
-	if (query.p) url += `/page/${query.p}`
-    }
-
-    if (lang_code && lang_code !== '-') url += `/language/${lang_code}`
-    return url
 }
 
 class History {

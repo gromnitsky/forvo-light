@@ -21,66 +21,69 @@ suite('misc', function() {
     })
 
     test('query_parse', function() {
-	assert.deepEqual(search.query_parse(),
+	assert.deepEqual(new search.Query().parse(),
 			 { type: '.pws', q: '' })
 
-	assert.deepEqual(search.query_parse(' .'),
+	assert.deepEqual(new search.Query(' .').parse(),
 			 { type: '.wp', q: '' })
-	assert.deepEqual(search.query_parse('.'),
+	assert.deepEqual(new search.Query('.').parse(),
 			 { type: '.wp', q: '' })
-	assert.deepEqual(search.query_parse('. hello  world'),
+	assert.deepEqual(new search.Query('. hello  world').parse(),
 			 { type: '.wp', q: 'hello world' })
-	assert.deepEqual(search.query_parse('.wp hello  world'),
+	assert.deepEqual(new search.Query('.wp hello  world').parse(),
 			 { type: '.wp', q: 'hello world' })
 
-	assert.deepEqual(search.query_parse('hello world'),
+	assert.deepEqual(new search.Query('hello world').parse(),
 			 { type: '.pws', q: 'hello world' })
-	assert.deepEqual(search.query_parse('.an-unknown-type'),
+	assert.deepEqual(new search.Query('.an-unknown-type').parse(),
 			 { type: '.pws', q: '' })
 
 	// pages
-	assert.deepEqual(search.query_parse('hello world .2 .0'),
+	assert.deepEqual(new search.Query('hello world .2 .0').parse(),
 			 { type: '.pws', q: 'hello world', p: 1 })
 
     })
 
     test('query_restore', function() {
-	assert.equal(search.query_restore(), "")
-	assert.equal(search.query_restore({type: '.wp', q: ''}), ".")
-	assert.equal(search.query_restore({type: '.wp', q: '1 2'}), ". 1 2")
-	assert.equal(search.query_restore({type: '.top', q: ''}), ".top")
-	assert.equal(search.query_restore({type: '.pws', q: 'hello'}), "hello")
-	assert.equal(search.query_restore({type: '.pws', q: ''}), "")
+	let sq = new search.Query()
+	let fn = sq.restore.bind(sq)
+	assert.equal(fn(), "")
+	assert.equal(fn({type: '.wp', q: ''}), ".")
+	assert.equal(fn({type: '.wp', q: '1 2'}), ". 1 2")
+	assert.equal(fn({type: '.top', q: ''}), ".top")
+	assert.equal(fn({type: '.pws', q: 'hello'}), "hello")
+	assert.equal(fn({type: '.pws', q: ''}), "")
 
 	// pages
-	assert.equal(search.query_restore({type: '.pws', q: 'hello', p: 1}), "hello .1")
+	assert.equal(fn({type: '.pws', q: 'hello', p: 1}), "hello .1")
 
     })
 
     test('req_url', function() {
-	assert.equal(search.req_url(), null)
-	assert.equal(search.req_url('XXX'), null)
+	assert.equal(new search.Query().req_url(), null)
 
-	assert.equal(search.req_url('XXX', search.query_parse()), null)
+	let sq = new search.Query('', { apikey: 'XXX' })
+	assert.equal(sq.req_url(), null)
 
-	assert.equal(search.req_url('XXX', search.query_parse('avaux')),
-		     'https://apifree.forvo.com/key/XXX/format/json/action/pronounced-words-search/search/avaux')
-	assert.equal(search.req_url('XXX', search.query_parse('. cat shark')),
-		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark')
+	sq.orig = 'avaux'
+	assert.equal(sq.req_url(), 'https://apifree.forvo.com/key/XXX/format/json/action/pronounced-words-search/search/avaux')
 
-	assert.equal(search.req_url('XXX', search.query_parse('. cat shark'),
-				    'invalid'),
-		     null)
-	assert.equal(search.req_url('XXX', search.query_parse('. cat shark'),
-				    'en'),
-		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark/language/en')
-	assert.equal(search.req_url('XXX', search.query_parse('. cat shark'),
-				    '-'),
-		     'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark')
+	sq.orig = '. cat shark'
+	assert.equal(sq.req_url(), 'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark')
+
+	sq.opt.lang_code = 'invalid'
+	assert.equal(sq.req_url(), null)
+
+	sq.opt.lang_code = 'en'
+	assert.equal(sq.req_url(), 'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark/language/en')
+
+	sq.opt.lang_code = '-'
+	assert.equal(sq.req_url(), 'https://apifree.forvo.com/key/XXX/format/json/action/word-pronunciations/word/cat%20shark')
 
 	// pages
-	assert.equal(search.req_url('XXX', search.query_parse('avaux .2 .1')),
-		     'https://apifree.forvo.com/key/XXX/format/json/action/pronounced-words-search/search/avaux/page/1')
+	sq.opt.lang_code = null
+	sq.orig = 'avaux .2 .1'
+	assert.equal(sq.req_url(), 'https://apifree.forvo.com/key/XXX/format/json/action/pronounced-words-search/search/avaux/page/1')
     })
 })
 

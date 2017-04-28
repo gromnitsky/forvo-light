@@ -161,14 +161,14 @@ class PageSearch extends Page {
 	this.$('#search__output').innerHTML = html
     }
 
-    server_opt_set() {
+    server_opt_set(sq) {
 	if (!conf.debug) return true
 
 	let opt = localStorage.getItem('forvo-light-server')
 	if (!opt) return false
 
 	opt = opt.trim().split(/\s+/)
-	search.forvo = {
+	sq.opt.endpoint = {
 	    protocol: opt[0],
 	    host: opt[1],
 	    port: opt[2]
@@ -180,21 +180,23 @@ class PageSearch extends Page {
 	event.preventDefault()
 
 	let apikey = localStorage.getItem('forvo-light-apikey')
-	let langlist = localStorage.getItem('forvo-light-langlist')
 	if (!apikey) {
 	    this.output('No API key')
 	    return
 	}
+	let langlist = localStorage.getItem('forvo-light-langlist')
 	let qc = new search.QueryCounter(apikey)
 
-	if (!this.server_opt_set()) {
+	let sq = new search.Query(this.$('form input').value, {
+	    apikey,
+	    lang_code: this.$('form select').value
+	})
+	if (!this.server_opt_set(sq)) {
 	    this.output('Debug mode requires <i>Server options</i>')
 	    return
 	}
 
-	let query = search.query_parse(this.$('form input').value)
-	let lang = this.$('form select').value
-	let url = search.req_url(apikey, query, lang)
+	let url = sq.req_url()
 	if (!url) {
 	    this.output('Incomplete query')
 	    return
@@ -215,7 +217,7 @@ class PageSearch extends Page {
 	jsonp(url, {timeout: 15000}, (err, data) => {
 	    button.disabled = false
 	    if (err) {
-		this.output(`<code>${search.forvo.protocol}://${search.forvo.host}:${search.forvo.port}</code> ${err}`)
+		this.output(`<code>${sq.opt.endpoint.protocol}://${sq.opt.endpoint.host}:${sq.opt.endpoint.port}</code> ${err}`)
 		return
 	    }
 	    log('jsonp result', data)
@@ -227,11 +229,11 @@ class PageSearch extends Page {
 	    }
 
 	    qc.inc()
-	    this.history.add(search.query_restore(query))
-	    this.url_update(query, lang)
+	    this.history.add(sq.restore())
+	    this.url_update(sq)
 
 	    let widget
-	    switch (query.type) {
+	    switch (sq.query.type) {
 	    case '.wp':
 		widget = new ForvoPronouncedWordsSearch('#search__output',
 							data, { langlist })
@@ -241,19 +243,17 @@ class PageSearch extends Page {
 		break
 	    default:
 		// pronounced-words-search
-		widget = new ForvoPronouncedWordsSearch('#search__output',
-							data,
-							{ langlist, query })
+		widget = new ForvoPronouncedWordsSearch('#search__output', data, { langlist, query: sq.query })
 	    }
 	    widget.render()
 	})
     }
 
-    url_update(query, lang) {
+    url_update(sq) {
 	// FIXME: do a push instead but check if the prev state !== the cur
 	window.history.replaceState({}, '', this.hyperlink({
-	    'q': search.query_restore(query),
-	    'l': lang
+	    'q': sq.restore(),
+	    'l': sq.opt.lang_code
 	}))
 	this.nav.update()
     }
