@@ -108,7 +108,12 @@ $(cordova.dest)/.target.setup: $(cordova.dest)/config.xml
 	cd $(dir $@) && $(cordova) plugin --noregistry --link --searchpath ../node_modules add cordova-plugin-network-information cordova-plugin-inappbrowser
 	touch $@
 
-$(cordova.dest)/.target.build: $(cordova.dest)/.target.setup $(compile.all)
+cordova.patch0.dest := $(cordova.dest)/platforms/android/src/gromnitsky/forvolight/MainActivity.java
+$(cordova.patch0.dest): $(cordova.src)/MainActivity.java $(cordova.dest)/.target.setup
+	$(mkdir)
+	$(copy)
+
+$(cordova.dest)/.target.build: $(cordova.patch0.dest) $(compile.all)
 	cd $(dir $@) && $(cordova) build
 	touch $@
 
