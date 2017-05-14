@@ -65,8 +65,6 @@ w/o React or Angular.
 * `history.replaceState()` doesn't modify `location.hash`
 * `error` event in `Audio()` doesn't get fired in cases of 404,
   invalid format, etc.
-* `Date.prototype.getHours()` returns an UTC hour instead of the local
-  value.
 
 ## License
 
