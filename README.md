@@ -30,6 +30,8 @@ Then copy `src/` dir where your webserver expects static files.
 Because I have a silly requirement of using the app on ancient devices
 w/ Android 2.3, you can build the app only if you
 
+* point `ANDROID_HOME` env var to the Android SDK Tools not newer than
+  25.2.5; using that version of SDK Tools, install SDK Platform 21.
 * `npm i -g cordova@4.3.0`
 * use a Node version manager,
   like [nodever](https://github.com/gromnitsky/nodever), for old
