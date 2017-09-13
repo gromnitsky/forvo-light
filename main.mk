@@ -101,7 +101,7 @@ $(cordova.dest)/config.xml: $(cordova.src)/config.xml package.json
 
 $(cordova.dest)/.target.setup: $(cordova.dest)/config.xml
 	for idx in platforms plugins www; do rm -rf $(dir $@)/$$idx; done
-	cp $(cordova.src)/*.png $(cordova.dest)/
+	cp $(mk)/src/favicon.png $(cordova.dest)/icon.png
 	cd $(dir $@) && ln -sf ../src www
 	cd $(dir $@) && $(cordova) platforms add android
 	rm -rf $(dir $@)/platforms/android/res/drawable*
